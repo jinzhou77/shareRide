@@ -32,6 +32,10 @@ module.exports = function(router, passport) {
         res.status(200).json({ message: "logged out "});
     });
 
+    router.get('/users', function(req, res){
+      res.status(200).json({ user: req.user, message: "Welcome!"
+      });
+    });
     //USER API START**************************************************************************************************************
     /* GET users listing. */
     router.get('/', function(req, res, next) {

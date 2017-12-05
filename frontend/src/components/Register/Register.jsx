@@ -22,6 +22,7 @@ class Register extends Component {
         this.onSubmit = this.onSubmit.bind(this);
         this.onChangePassword = this.onChangePassword.bind(this);
         this.onChangeEmail = this.onChangeEmail.bind(this);
+        this.onChangePhoneNumber = this.onChangePhoneNumber.bind(this);
     }
 
     onSubmit(e) {
@@ -31,9 +32,10 @@ class Register extends Component {
         const name = encodeURIComponent(this.state.user.username);
         const email = encodeURIComponent(this.state.user.email);
         const password = encodeURIComponent(this.state.user.password);
-        const formData = `name=${name}&email=${email}&password=${password}`;
+        const phoneNumber = encodeURIComponent(this.state.user.phoneNumber);
+        const formData = `name=${name}&email=${email}&password=${password}&phoneNumber=${phoneNumber}`;
 
-        // create an AJAX POST request (This should probably done with Axios instead) 
+        // create an AJAX POST request (This should probably done with Axios instead)
         const xhr = new XMLHttpRequest();
         xhr.open('post', '/api/register');
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -69,6 +71,14 @@ class Register extends Component {
         })
     }
 
+    onChangePhoneNumber(e) {
+        const user = this.state.user;
+        user.phoneNumber = e.target.value;
+        this.setState({
+            user
+        })
+    }
+
     render() {
         return(
             <form className="Register" action="/" onSubmit={this.onSubmit}>
@@ -78,6 +88,8 @@ class Register extends Component {
                         <Input label="Email" onChange={this.onChangeEmail} />
                         <br/><br/>
                         <Input label="Password" onChange={this.onChangePassword} />
+                        <br/><br/>
+                        <Input label="phoneNumber" onChange={this.onChangePhoneNumber} />
                         <br/><br/>
                         <p>{this.state.message}</p>
                         <Input type="submit" />
