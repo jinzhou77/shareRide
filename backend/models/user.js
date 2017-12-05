@@ -5,6 +5,7 @@ var bcrypt = require('bcrypt');
 var userSchema = mongoose.Schema({
     email		: String,
     password	: String,
+    name:String,
     phoneNumber: {type: String, required: true, default: '+1 217-904-3333'},
     dateCreated: {type: Date, default: Date.now},
     versionKey: false

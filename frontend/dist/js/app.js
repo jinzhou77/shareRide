@@ -63647,7 +63647,9 @@ var Register = function (_Component) {
         _this.state = {
             user: {
                 password: '',
-                email: ''
+                email: '',
+                phoneNumber: '',
+                name: ''
             },
 
             message: ''
@@ -63657,6 +63659,7 @@ var Register = function (_Component) {
         _this.onChangePassword = _this.onChangePassword.bind(_this);
         _this.onChangeEmail = _this.onChangeEmail.bind(_this);
         _this.onChangePhoneNumber = _this.onChangePhoneNumber.bind(_this);
+        _this.onChangeName = _this.onChangeName.bind(_this);
         return _this;
     }
 
@@ -63668,7 +63671,7 @@ var Register = function (_Component) {
             e.preventDefault();
 
             // create a string for an HTTP body message
-            var name = encodeURIComponent(this.state.user.username);
+            var name = encodeURIComponent(this.state.user.name);
             var email = encodeURIComponent(this.state.user.email);
             var password = encodeURIComponent(this.state.user.password);
             var phoneNumber = encodeURIComponent(this.state.user.phoneNumber);
@@ -63682,6 +63685,7 @@ var Register = function (_Component) {
             xhr.addEventListener('load', function () {
                 if (xhr.status === 200) {
                     console.log('The form is valid');
+                    console.log(_this2.state.user.name);
                     _this2.setState({
                         message: 'Registered!'
                     });
@@ -63721,6 +63725,15 @@ var Register = function (_Component) {
             });
         }
     }, {
+        key: 'onChangeName',
+        value: function onChangeName(e) {
+            var user = this.state.user;
+            user.name = e.target.value;
+            this.setState({
+                user: user
+            });
+        }
+    }, {
         key: 'render',
         value: function render() {
             return _react2.default.createElement(
@@ -63738,6 +63751,9 @@ var Register = function (_Component) {
                             'Register'
                         ),
                         _react2.default.createElement(_semanticUiReact.Input, { label: 'Email', onChange: this.onChangeEmail }),
+                        _react2.default.createElement('br', null),
+                        _react2.default.createElement('br', null),
+                        _react2.default.createElement(_semanticUiReact.Input, { label: 'Name', onChange: this.onChangeName }),
                         _react2.default.createElement('br', null),
                         _react2.default.createElement('br', null),
                         _react2.default.createElement(_semanticUiReact.Input, { label: 'Password', onChange: this.onChangePassword }),
@@ -65195,6 +65211,10 @@ var _semanticUiReact = __webpack_require__(57);
 
 var _reactRouterDom = __webpack_require__(45);
 
+var _axios = __webpack_require__(407);
+
+var _axios2 = _interopRequireDefault(_axios);
+
 var _Driver = __webpack_require__(806);
 
 var _Driver2 = _interopRequireDefault(_Driver);
@@ -65216,13 +65236,55 @@ var Driver = function (_Component) {
     var _this = _possibleConstructorReturn(this, (Driver.__proto__ || Object.getPrototypeOf(Driver)).call(this));
 
     _this.state = {
-      post_Click: false
+      isLoggedIn: false,
+      post_Click: false,
+      driverName: '',
+      departureValue: '',
+      destinationValue: '',
+      hasSeats: ''
     };
+    _this.departureChange = _this.departureChange.bind(_this);
+    _this.destinationChange = _this.destinationChange.bind(_this);
     _this.handlerClick = _this.handlerClick.bind(_this);
+    _this.hasSeatsChange = _this.hasSeatsChange.bind(_this);
+    _this.onSubmit = _this.onSubmit.bind(_this);
     return _this;
   }
 
   _createClass(Driver, [{
+    key: 'onSubmit',
+    value: function onSubmit(e) {
+      var _this2 = this;
+
+      e.preventDefault();
+
+      //create a string for an HTTP body message
+      var driverName = this.state.driverName;
+      var departure = this.state.departureValue;
+      var destination = this.state.destinationValue;
+      var hasSeats = this.state.hasSeats;
+      var formData = 'departure=' + departure + '\n                      &destination=' + destination + '\n                      &driverName=' + driverName + '\n                      &hasSeats=' + hasSeats;
+
+      // create an AJAX POST request (This should probably done with Axios instead)
+      var xhr = new XMLHttpRequest();
+      xhr.open('post', '/api/rideInfo');
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      xhr.responseType = 'json';
+      xhr.addEventListener('load', function () {
+        if (xhr.status === 201) {
+          alert('successfully posted');
+          _this2.setState({
+            message: "Posted!"
+          });
+        } else {
+          _this2.setState({
+            message: 'Unable to Post'
+          });
+        }
+      });
+      xhr.send(formData);
+    }
+  }, {
     key: 'handlerClick',
     value: function handlerClick() {
       this.setState(function (prevState) {
@@ -65232,22 +65294,58 @@ var Driver = function (_Component) {
       });
     }
   }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      var _this3 = this;
+
+      _axios2.default.get('/api/profile').then(function (res) {
+        console.log(res.data.user);
+        _this3.setState({
+          isLoggedIn: true,
+          driverName: res.data.user.name
+        });
+      }).catch(function (err) {
+        _this3.setState({
+          isLoggedIn: false
+
+        });
+      });
+    }
+  }, {
+    key: 'departureChange',
+    value: function departureChange(e) {
+      this.setState({
+        departureValue: e.target.value
+      });
+    }
+  }, {
+    key: 'destinationChange',
+    value: function destinationChange(e) {
+      this.setState({
+        destinationValue: e.target.value
+      });
+    }
+  }, {
+    key: 'hasSeatsChange',
+    value: function hasSeatsChange(e) {
+      this.setState({
+        hasSeats: e.target.value
+      });
+    }
+  }, {
     key: 'render',
     value: function render() {
-      var departure = [{ key: "airport", value: "airport", text: "O'hare" }, { key: "UIUC", value: "UIUC", text: "UIUC" }];
-      var destination = [{ key: "airport", value: "airport", text: "O'hare" }, { key: "UIUC", value: "UIUC", text: "UIUC" }];
-      var seats_number = [{ key: "4", value: "4", text: '4' }, { key: "6", value: "4", text: '6' }];
-      return _react2.default.createElement(
-        'div',
-        null,
-        _react2.default.createElement(
-          'h1',
-          null,
-          ' this is Driver page'
-        ),
-        _react2.default.createElement(
+      if (this.state.isLoggedIn) {
+        return _react2.default.createElement(
           'div',
           null,
+          _react2.default.createElement(
+            'h1',
+            null,
+            'Hi ',
+            this.state.driverName,
+            ', this is Driver page'
+          ),
           _react2.default.createElement(
             _reactRouterDom.Link,
             { to: '/' },
@@ -65265,25 +65363,109 @@ var Driver = function (_Component) {
               null,
               'MainPage'
             )
-          )
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'Driver_filter' },
-          _react2.default.createElement(_semanticUiReact.Dropdown, { placeholder: 'Departure', selection: true, options: departure }),
-          _react2.default.createElement(_semanticUiReact.Dropdown, { placeholder: 'Destination', selection: true, options: destination }),
-          _react2.default.createElement(_semanticUiReact.Dropdown, { placeholder: 'Seats Available', selection: true, options: seats_number }),
+          ),
           _react2.default.createElement(
-            _reactRouterDom.Link,
-            { to: '/user' },
+            'form',
+            { onSubmit: this.onSubmit },
             _react2.default.createElement(
-              _semanticUiReact.Button,
-              { onClick: this.handlerClick },
-              'Post'
+              'div',
+              { className: 'Driver_filter' },
+              _react2.default.createElement(
+                'select',
+                { value: this.state.departureValue, onChange: this.departureChange },
+                _react2.default.createElement(
+                  'option',
+                  { value: '' },
+                  'Select You departure'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: 'Chicago' },
+                  'Chicago'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: 'O\'hare' },
+                  'O\'hare'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: 'UIUC' },
+                  'UIUC'
+                )
+              ),
+              _react2.default.createElement(
+                'select',
+                { value: this.state.destinationValue, onChange: this.destinationChange },
+                _react2.default.createElement(
+                  'option',
+                  { value: '' },
+                  'Select Your Destination'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: 'Chicago' },
+                  'Chicago'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: 'O\'hare' },
+                  'O\'hare'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: 'UIUC' },
+                  'UIUC'
+                )
+              ),
+              _react2.default.createElement(
+                'select',
+                { value: this.state.hasSeats, onChange: this.hasSeatsChange },
+                _react2.default.createElement(
+                  'option',
+                  { value: '' },
+                  'Select the hasSeats Available'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: '1' },
+                  '1'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: '4' },
+                  '4'
+                ),
+                _react2.default.createElement(
+                  'option',
+                  { value: '6' },
+                  '6'
+                )
+              ),
+              _react2.default.createElement(_semanticUiReact.Input, { type: 'submit' })
             )
           )
-        )
-      );
+        );
+      } else {
+        return _react2.default.createElement(
+          'div',
+          null,
+          _react2.default.createElement(
+            _semanticUiReact.Card,
+            null,
+            _react2.default.createElement(
+              'h1',
+              null,
+              'You must log in before you can see this page.'
+            ),
+            _react2.default.createElement(
+              _reactRouterDom.Link,
+              { to: '/' },
+              'Back'
+            )
+          )
+        );
+      }
     }
   }]);
 

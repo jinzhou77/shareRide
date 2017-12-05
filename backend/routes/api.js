@@ -88,74 +88,7 @@ module.exports = function(router, passport) {
     });
     //User API END**************************************************************************************************************
 
-    //Rideinfo API START*******************************************************************************************************
-    /* GET rideinfos listing. */
-    router.get('/', function(req, res, next) {
-        const queryStr = req.query.where;
-        const query = JSON.parse(conditionStr);
-
-        const condition = {
-            destination: query.destination,
-            departureTime: {$gt: query.departureTime},
-            availableSeats: {$gt: query.availableSeats},
-            completed: false
-        };
-
-        console.log(query);
-        res.set({
-            'Content-Type': 'application/json'
-        });
-
-        Users.find(condition, function (err, rideinfos) {
-            if (err) {
-                res.status(500).json({message: 'find rideinfos error!', data: {}});
-            } else {
-                res.status(200).json({message: 'rideinfos', data: rideinfos});
-            }
-        })
-    });
-
-    router.post('/', function (req, res, next) {
-        res.set({
-            'Content-Type': 'application/json'
-        });
-
-        if (req.body.driverName === '' || req.body.driverName === undefined || req.body.departure === '' || req.body.departure === undefined
-            || req.body.destination === '' || req.body.destination === undefined || req.body.departureTime === '' || req.body.departureTime === undefined
-        || req.body.hasSeats === 0 || req.body.hasSeats === undefined) {
-            res.status(403).json({message: 'some required fields are missing', data: {}});
-        } else {
-            Rideinfo.find({driverName: req.body.driverName, departureTime: req.body.departureTime}, function (err, rideinfosSame) {
-                if (err) {
-                    res.status(500).json({message: 'insert rideinfo error!', data: {}});
-                } else {
-                    if (rideinfosSame.length > 0) {
-                        res.status(403).json({message: 'rideinfo already exists!', data: {}});
-                    } else {
-                        const newRideinfo = new Rideinfo({
-                            driverName: req.body.driverName,
-                            driverEmail: req.body.driverEmail,
-                            passengersEmail: [],
-                            departure: req.body.departure,
-                            destination: req.body.destination,
-                            departureTime: req.body.departureTime,
-                            hasSeats: req.body.hasSeats,
-                            availableSeats: req.body.hasSeats,
-                        });
-                        newRideinfo.save(function (err, newRideinfo) {
-                            if (err) {
-                                res.status(500).json({message: 'insert rideinfo error!', data: {}});
-                            } else {
-                                res.status(201).json({message: 'new rideinfo created', data: newRideinfo});
-                            }
-                        });
-                    }
-                }
-            });
-        }
-    });
-    //RideInfo API END*****************************************************************************************************************
-    return router;
+  return router;
 }
 
 function isLoggedIn(req, res, next) {

@@ -13,7 +13,9 @@ class Register extends Component {
         this.state = {
             user: {
                 password: '',
-                email: ''
+                email: '',
+                phoneNumber:'',
+                name:''
             },
 
             message: ''
@@ -23,13 +25,14 @@ class Register extends Component {
         this.onChangePassword = this.onChangePassword.bind(this);
         this.onChangeEmail = this.onChangeEmail.bind(this);
         this.onChangePhoneNumber = this.onChangePhoneNumber.bind(this);
+        this.onChangeName=this.onChangeName.bind(this);
     }
 
     onSubmit(e) {
         e.preventDefault();
 
         // create a string for an HTTP body message
-        const name = encodeURIComponent(this.state.user.username);
+        const name = encodeURIComponent(this.state.user.name);
         const email = encodeURIComponent(this.state.user.email);
         const password = encodeURIComponent(this.state.user.password);
         const phoneNumber = encodeURIComponent(this.state.user.phoneNumber);
@@ -43,6 +46,7 @@ class Register extends Component {
         xhr.addEventListener('load', () => {
             if (xhr.status === 200) {
                 console.log('The form is valid');
+                console.log(this.state.user.name);
                 this.setState({
                     message: 'Registered!'
                 })
@@ -78,7 +82,13 @@ class Register extends Component {
             user
         })
     }
-
+    onChangeName(e){
+      const user=this.state.user;
+      user.name=e.target.value;
+      this.setState({
+        user
+      })
+    }
     render() {
         return(
             <form className="Register" action="/" onSubmit={this.onSubmit}>
@@ -86,6 +96,8 @@ class Register extends Component {
                     <div>
                         <h1>Register</h1>
                         <Input label="Email" onChange={this.onChangeEmail} />
+                        <br/><br/>
+                        <Input label="Name" onChange={this.onChangeName} />
                         <br/><br/>
                         <Input label="Password" onChange={this.onChangePassword} />
                         <br/><br/>

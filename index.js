@@ -55,7 +55,8 @@ app.use(passport.session());
 
 // Get our routes
 app.use('/api', require('./backend/routes/api')(router, passport));
-
+var rideInfo = require('./backend/routes/rideInfo');
+app.use('/api/rideInfo', rideInfo)
 /* =========================================================================== */
 
 // start the server
