@@ -1,6 +1,6 @@
 
 const Users = require('../models/user');
-const Rideinfo = require('../models/Rideinfo');
+const Rideinfo = require('../models/rideinfo');
 
 module.exports = function(router, passport) {
 

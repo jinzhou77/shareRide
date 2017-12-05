@@ -28,9 +28,10 @@ class Driver extends Component {
     return(
       <div>
         <h1> this is Driver page</h1>
-        <Link to="/"><Button>Logout</Button></Link>
-        <Link to="/MainPage"><Button>MainPage</Button></Link>
-
+        <div>
+          <Link to="/"><Button>Logout</Button></Link>
+          <Link to="/MainPage"><Button>MainPage</Button></Link>
+        </div>
         <div className="Driver_filter">
           <Dropdown placeholder="Departure" selection options={departure} />
           <Dropdown placeholder="Destination" selection options={destination} />

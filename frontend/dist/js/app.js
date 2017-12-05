@@ -65246,21 +65246,25 @@ var Driver = function (_Component) {
           ' this is Driver page'
         ),
         _react2.default.createElement(
-          _reactRouterDom.Link,
-          { to: '/' },
+          'div',
+          null,
           _react2.default.createElement(
-            _semanticUiReact.Button,
-            null,
-            'Logout'
-          )
-        ),
-        _react2.default.createElement(
-          _reactRouterDom.Link,
-          { to: '/MainPage' },
+            _reactRouterDom.Link,
+            { to: '/' },
+            _react2.default.createElement(
+              _semanticUiReact.Button,
+              null,
+              'Logout'
+            )
+          ),
           _react2.default.createElement(
-            _semanticUiReact.Button,
-            null,
-            'MainPage'
+            _reactRouterDom.Link,
+            { to: '/MainPage' },
+            _react2.default.createElement(
+              _semanticUiReact.Button,
+              null,
+              'MainPage'
+            )
           )
         ),
         _react2.default.createElement(
