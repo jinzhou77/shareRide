@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom'
 import axios from  'axios'
 import PropTypes from 'prop-types';
 import styles from './Passenger.css'
-var data;
+// var data;
+var url;
 class Passenger extends Component {
   constructor(props){
     super(props);
@@ -17,12 +18,21 @@ class Passenger extends Component {
       numberSeats:'',
       results:{},
       data:[],
-      isClicked:false
+      isClicked:false,
+      passengerClicked:false,
+      theDriver: []
     };
     this.departureChange=this.departureChange.bind(this);
     this.destinationChange=this.destinationChange.bind(this);
     this.seatsChange= this.seatsChange.bind(this);
     this.onSubmit=this.onSubmit.bind(this);
+    this.passengerSubmit= this.passengerSubmit.bind(this);
+  }
+  passengerSubmit(e, data){
+    this.setState({
+      theDriver:data.value,
+      passengerClicked:true
+    })
   }
   onSubmit(e){
     e.preventDefault();
@@ -32,7 +42,7 @@ class Passenger extends Component {
     const departure = this.state.departureValue;
     const hasSeats= this.state.numberSeats;
 
-    const formData = `{"departure":"${departure}","destination":"${destination}"}`;
+    const formData = `{"departure":"${departure}","destination":"${destination}","hasSeats":"${hasSeats}"}`;
     const xhr= new XMLHttpRequest();
 
     xhr.open("GET", "http://localhost:3000/api/rideInfo?where="+formData);
@@ -85,7 +95,25 @@ class Passenger extends Component {
   }
 
   render() {
-    console.log(this.state.data);
+    if(this.state.passengerClicked){
+      url="http://localhost:3000/api/rideInfo/"+this.state.theDriver._id;
+      console.log(url);
+      this.state.theDriver.passengersEmail.push(this.state.passengerEmail);
+      this.state.theDriver.hasSeats=this.state.theDriver.hasSeats-this.state.numberSeats;
+      var json =JSON.stringify(this.state.theDriver);
+      var xhr=new XMLHttpRequest();
+      xhr.open("PUT", url,true);
+      xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
+      xhr.onload = () => {
+        var rideUpdated = JSON.parse(xhr.responseText);
+        if(xhr.readyState == 4 && xhr.status===200){
+          console.log(rideUpdated);
+        }else{
+          console.log("did not update anything");
+        }
+      }
+      xhr.send(json);
+    }
     if(this.state.isLoggedIn){
       if(!this.state.isClicked){
         return(
@@ -136,15 +164,15 @@ class Passenger extends Component {
                   </Table.Header>
 
                   <Table.Body>
-                    {this.state.data.map((i)=>
-                      <Table.Row key={i._id}>
-                        <Table.Cell>{i.driverName}</Table.Cell>
-                        <Table.Cell>{i.departure}</Table.Cell>
-                        <Table.Cell>{i.destination}</Table.Cell>
-                        <Table.Cell>{i.hasSeats}</Table.Cell>
-                        <Table.Cell><Button>Submit</Button></Table.Cell>
-                      </Table.Row>
-                    )}
+                      {this.state.data.map((i)=>
+                        <Table.Row key={i._id}>
+                          <Table.Cell>{i.driverName}</Table.Cell>
+                          <Table.Cell>{i.departure}</Table.Cell>
+                          <Table.Cell>{i.destination}</Table.Cell>
+                          <Table.Cell>{i.hasSeats}</Table.Cell>
+                          <Table.Cell><Button value={i}onClick={this.passengerSubmit}>Submit</Button></Table.Cell>
+                        </Table.Row>
+                      )}
                   </Table.Body>
                 </Table>
             </div>

@@ -9,7 +9,7 @@ class Home extends Component {
         return(
             <div className="Home">
                 <Card>
-                    <h1>Welcome to MP2!</h1>
+                    <h1>Welcome to Share Ride!</h1>
 
                     <span>
                         <Link to="/login">

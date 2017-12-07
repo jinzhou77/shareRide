@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 const rideinfoSchema = mongoose.Schema({
     driverName: {type: String, required: true},
     driverEmail: String,
-    passengersEmail: [String],
+    passengersEmail: [{type:String}],
     departure: String,
     destination: String,
     departureTime: Number,

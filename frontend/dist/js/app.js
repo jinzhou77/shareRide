@@ -44063,7 +44063,7 @@ var Home = function (_Component) {
                     _react2.default.createElement(
                         'h1',
                         null,
-                        'Welcome to MP2!'
+                        'Welcome to Share Ride!'
                     ),
                     _react2.default.createElement(
                         'span',
@@ -65566,7 +65566,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var data;
+// var data;
+var url;
 
 var Passenger = function (_Component) {
   _inherits(Passenger, _Component);
@@ -65585,16 +65586,27 @@ var Passenger = function (_Component) {
       numberSeats: '',
       results: {},
       data: [],
-      isClicked: false
+      isClicked: false,
+      passengerClicked: false,
+      theDriver: []
     };
     _this.departureChange = _this.departureChange.bind(_this);
     _this.destinationChange = _this.destinationChange.bind(_this);
     _this.seatsChange = _this.seatsChange.bind(_this);
     _this.onSubmit = _this.onSubmit.bind(_this);
+    _this.passengerSubmit = _this.passengerSubmit.bind(_this);
     return _this;
   }
 
   _createClass(Passenger, [{
+    key: 'passengerSubmit',
+    value: function passengerSubmit(e, data) {
+      this.setState({
+        theDriver: data.value,
+        passengerClicked: true
+      });
+    }
+  }, {
     key: 'onSubmit',
     value: function onSubmit(e) {
       var _this2 = this;
@@ -65606,7 +65618,7 @@ var Passenger = function (_Component) {
       var departure = this.state.departureValue;
       var hasSeats = this.state.numberSeats;
 
-      var formData = '{"departure":"' + departure + '","destination":"' + destination + '"}';
+      var formData = '{"departure":"' + departure + '","destination":"' + destination + '","hasSeats":"' + hasSeats + '"}';
       var xhr = new XMLHttpRequest();
 
       xhr.open("GET", "http://localhost:3000/api/rideInfo?where=" + formData);
@@ -65670,7 +65682,27 @@ var Passenger = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      console.log(this.state.data);
+      var _this4 = this;
+
+      if (this.state.passengerClicked) {
+        url = "http://localhost:3000/api/rideInfo/" + this.state.theDriver._id;
+        console.log(url);
+        this.state.theDriver.passengersEmail.push(this.state.passengerEmail);
+        this.state.theDriver.hasSeats = this.state.theDriver.hasSeats - this.state.numberSeats;
+        var json = JSON.stringify(this.state.theDriver);
+        var xhr = new XMLHttpRequest();
+        xhr.open("PUT", url, true);
+        xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+        xhr.onload = function () {
+          var rideUpdated = JSON.parse(xhr.responseText);
+          if (xhr.readyState == 4 && xhr.status === 200) {
+            console.log(rideUpdated);
+          } else {
+            console.log("did not update anything");
+          }
+        };
+        xhr.send(json);
+      }
       if (this.state.isLoggedIn) {
         if (!this.state.isClicked) {
           return _react2.default.createElement(
@@ -65862,7 +65894,7 @@ var Passenger = function (_Component) {
                       null,
                       _react2.default.createElement(
                         _semanticUiReact.Button,
-                        null,
+                        { value: i, onClick: _this4.passengerSubmit },
                         'Submit'
                       )
                     )
