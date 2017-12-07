@@ -8,7 +8,6 @@ import Login from './components/Login/Login.jsx';
 import Dashboard from './components/Dashboard/Dashboard.jsx';
 import Driver from './components/Driver/Driver.jsx';
 import Passenger from './components/Passenger/Passenger.jsx';
-
 import styles from './styles/main.scss';
 
 ReactDom.render(

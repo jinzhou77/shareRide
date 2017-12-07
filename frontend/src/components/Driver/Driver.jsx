@@ -11,6 +11,7 @@ class Driver extends Component {
       isLoggedIn:false,
       post_Click:false,
       driverName:'',
+      driverEmail:'',
       departureValue:'',
       destinationValue:'',
       hasSeats:''
@@ -26,13 +27,11 @@ class Driver extends Component {
 
     //create a string for an HTTP body message
     const driverName=this.state.driverName;
+    const driverEmail=this.state.driverEmail;
     const departure = this.state.departureValue;
     const destination = this.state.destinationValue;
     const hasSeats = this.state.hasSeats;
-    const formData= `departure=${departure}
-                      &destination=${destination}
-                      &driverName=${driverName}
-                      &hasSeats=${hasSeats}`;
+    const formData= `departure=${departure}&destination=${destination}&driverName=${driverName}&hasSeats=${hasSeats}&driverEmail=${driverEmail}`;
 
     // create an AJAX POST request (This should probably done with Axios instead)
     const xhr = new XMLHttpRequest();
@@ -63,12 +62,12 @@ class Driver extends Component {
           console.log(res.data.user);
           this.setState({
               isLoggedIn: true,
-              driverName:res.data.user.name
+              driverName:res.data.user.name,
+              driverEmail:res.data.user.email
           })
       }).catch( (err) => {
           this.setState({
               isLoggedIn: false
-
           })
       })
   }
@@ -116,7 +115,7 @@ class Driver extends Component {
                   <option value='4'>4</option>
                   <option value='6'>6</option>
                 </select>
-              <Input type='submit' />
+              <Button type='submit' >Post</Button>
 
             </div>
           </form>
