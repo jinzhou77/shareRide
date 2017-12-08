@@ -92,9 +92,8 @@ class Driver extends Component {
       return(
         <div>
           <h1>Hi {this.state.driverName}, this is Driver page</h1>
+          <Link to="/dashboard"><Button>Back</Button></Link>
           <Link to="/"><Button>Logout</Button></Link>
-          <Link to="/MainPage"><Button>MainPage</Button></Link>
-
           <form onSubmit={this.onSubmit}>
             <div className="Driver_filter">
                 <select value={this.state.departureValue} onChange={this.departureChange}>

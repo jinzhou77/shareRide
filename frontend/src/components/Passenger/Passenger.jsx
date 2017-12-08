@@ -119,9 +119,9 @@ class Passenger extends Component {
       if(!this.state.isClicked){
         return(
           <div>
-            <h1> this is Passenger page</h1>
+            <h1>Hi {this.state.passengerName} this is Passenger page</h1>
+            <Link to="/dashboard"><Button>Back</Button></Link>
             <Link to="/"><Button>Logout</Button></Link>
-            <Link to="/MainPage"><Button>MainPage</Button></Link>
             <div className="Passenger_filter">
             <form onSubmit={this.onSubmit}>
               <div>
