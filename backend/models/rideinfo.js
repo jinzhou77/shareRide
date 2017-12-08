@@ -11,7 +11,8 @@ const rideinfoSchema = mongoose.Schema({
     availableSeats: Number,
     dateCreated: {type: Date, default: Date.now},
     completed: {type: Boolean, default: false},
-    versionKey: false
+    versionKey: false,
+    date: String
 });
 
 module.exports = mongoose.model('Rideinfo', rideinfoSchema);

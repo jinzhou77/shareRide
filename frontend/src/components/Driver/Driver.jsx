@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import { Button, Input, Icon,Dropdown, Card } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import moment from 'moment';
 import styles from "./Driver.css"
 
 class Driver extends Component {
@@ -21,6 +24,7 @@ class Driver extends Component {
     this.handlerClick= this.handlerClick.bind(this);
     this.hasSeatsChange=this.hasSeatsChange.bind(this);
     this.onSubmit= this.onSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
   onSubmit(e){
     e.preventDefault();
@@ -31,7 +35,8 @@ class Driver extends Component {
     const departure = this.state.departureValue;
     const destination = this.state.destinationValue;
     const hasSeats = this.state.hasSeats;
-    const formData= `departure=${departure}&destination=${destination}&driverName=${driverName}&hasSeats=${hasSeats}&driverEmail=${driverEmail}`;
+    const date = moment(this.state.startDate).format('DD/MM/YYYY');
+    const formData= `departure=${departure}&destination=${destination}&driverName=${driverName}&hasSeats=${hasSeats}&driverEmail=${driverEmail}&date=${date}`;
 
     // create an AJAX POST request (This should probably done with Axios instead)
     const xhr = new XMLHttpRequest();
@@ -86,7 +91,11 @@ class Driver extends Component {
       hasSeats:e.target.value
     })
   }
-
+    handleChange(date) {
+        this.setState({
+            startDate: date
+        });
+    }
   render() {
     if(this.state.isLoggedIn){
       return(
@@ -114,6 +123,10 @@ class Driver extends Component {
                   <option value='4'>4</option>
                   <option value='6'>6</option>
                 </select>
+                <DatePicker classname="calendar"
+                    selected={this.state.startDate}
+                    onChange={this.handleChange}
+                />
               <Button type='submit' >Post</Button>
 
             </div>

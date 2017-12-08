@@ -28,6 +28,7 @@ router.get('/', function(req, res, next) {
         destination: query.destination,
         departure:query.departure,
         hasSeats: {$gte: query.hasSeats},
+        date: query.date
     };
     rideInfo.find(condition, function (err, rideinfos) {
         if (err) {
@@ -87,15 +88,16 @@ router.put('/:id', function(req, res){
   }
 });
 router.post('/', function (req, res) {
-    // res.set({
-    //     'Content-Type': 'application/json'
-    // });
+    res.set({
+        'Content-Type': 'application/json'
+    });
     var rideInfoPost= {
       driverName:req.body.driverName,
       departure:req.body.departure,
       destination:req.body.destination,
       hasSeats:req.body.hasSeats,
-      driverEmail:req.body.driverEmail
+      driverEmail:req.body.driverEmail,
+      date:req.body.date
     }
     rideInfo.create(rideInfoPost, function(err, rideInfo){
       if(err){

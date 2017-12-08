@@ -3,7 +3,13 @@ import { Button, Input, Icon,Dropdown,Card,Table } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import axios from  'axios'
 import PropTypes from 'prop-types';
-import styles from './Passenger.css'
+
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import moment from 'moment';
+
+import styles from './Passenger.css';
+
 // var data;
 var url;
 class Passenger extends Component {
@@ -27,6 +33,7 @@ class Passenger extends Component {
     this.seatsChange= this.seatsChange.bind(this);
     this.onSubmit=this.onSubmit.bind(this);
     this.passengerSubmit= this.passengerSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
   passengerSubmit(e, data){
     this.setState({
@@ -34,6 +41,13 @@ class Passenger extends Component {
       passengerClicked:true
     })
   }
+
+  handleChange(date) {
+      this.setState({
+          startDate: date
+      });
+  }
+
   onSubmit(e){
     e.preventDefault();
     const passengerName=this.state.passengerName;
@@ -41,8 +55,8 @@ class Passenger extends Component {
     const destination= this.state.destinationValue;
     const departure = this.state.departureValue;
     const hasSeats= this.state.numberSeats;
-
-    const formData = `{"departure":"${departure}","destination":"${destination}","hasSeats":"${hasSeats}"}`;
+    const date = moment(this.state.startDate).format('DD/MM/YYYY');
+    const formData = `{"departure":"${departure}","destination":"${destination}","hasSeats":"${hasSeats}","date":"${date}"}`;
     const xhr= new XMLHttpRequest();
 
     xhr.open("GET", "http://localhost:3000/api/rideInfo?where="+formData);
@@ -95,6 +109,7 @@ class Passenger extends Component {
   }
 
   render() {
+    //console.log(moment(this.state.startDate).format('DD-MM-YYYY'));
     if(this.state.passengerClicked){
       url="http://localhost:3000/api/rideInfo/"+this.state.theDriver._id;
       console.log(url);
@@ -143,6 +158,11 @@ class Passenger extends Component {
                     <option value='4'>4</option>
                     <option value='6'>6</option>
                   </select>
+
+                  <DatePicker classname="calendar"
+                      selected={this.state.startDate}
+                      onChange={this.handleChange}
+                  />
                <Button type="submit">Search</Button>
               </div>
             </form>
@@ -161,6 +181,7 @@ class Passenger extends Component {
                        <Table.HeaderCell>Departure</Table.HeaderCell>
                        <Table.HeaderCell>Destination</Table.HeaderCell>
                        <Table.HeaderCell>Available Seats</Table.HeaderCell>
+                       <Table.HeaderCell>Date</Table.HeaderCell>
                        <Table.HeaderCell></Table.HeaderCell>
                       </Table.Row>
                     </Table.Header>
@@ -172,6 +193,7 @@ class Passenger extends Component {
                             <Table.Cell>{i.departure}</Table.Cell>
                             <Table.Cell>{i.destination}</Table.Cell>
                             <Table.Cell>{i.hasSeats}</Table.Cell>
+                            <Table.Cell>{i.date}</Table.Cell>
                             <Table.Cell><Button value={i} onClick={this.passengerSubmit}>Submit</Button></Table.Cell>
                           </Table.Row>
                         )}
