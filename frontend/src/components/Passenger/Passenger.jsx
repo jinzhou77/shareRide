@@ -108,6 +108,7 @@ class Passenger extends Component {
         var rideUpdated = JSON.parse(xhr.responseText);
         if(xhr.readyState == 4 && xhr.status===200){
           console.log(rideUpdated);
+          alert("You have successfully submit");
         }else{
           console.log("did not update anything");
         }
@@ -149,34 +150,46 @@ class Passenger extends Component {
             </div>
           )
         }else{
-          return(
-            <div>
-              <p>Result page</p>
-                <Table singleLine>
-                  <Table.Header>
-                    <Table.Row>
-                     <Table.HeaderCell>Driver Name</Table.HeaderCell>
-                     <Table.HeaderCell>Departure</Table.HeaderCell>
-                     <Table.HeaderCell>Destination</Table.HeaderCell>
-                     <Table.HeaderCell>Available Seats</Table.HeaderCell>
-                     <Table.HeaderCell></Table.HeaderCell>
-                    </Table.Row>
-                  </Table.Header>
+          if(!this.state.passengerClicked){
+            return(
+              <div>
+                <p>Result page</p>
+                  <Table singleLine>
+                    <Table.Header>
+                      <Table.Row>
+                       <Table.HeaderCell>Driver Name</Table.HeaderCell>
+                       <Table.HeaderCell>Departure</Table.HeaderCell>
+                       <Table.HeaderCell>Destination</Table.HeaderCell>
+                       <Table.HeaderCell>Available Seats</Table.HeaderCell>
+                       <Table.HeaderCell></Table.HeaderCell>
+                      </Table.Row>
+                    </Table.Header>
 
-                  <Table.Body>
-                      {this.state.data.map((i)=>
-                        <Table.Row key={i._id}>
-                          <Table.Cell>{i.driverName}</Table.Cell>
-                          <Table.Cell>{i.departure}</Table.Cell>
-                          <Table.Cell>{i.destination}</Table.Cell>
-                          <Table.Cell>{i.hasSeats}</Table.Cell>
-                          <Table.Cell><Button value={i}onClick={this.passengerSubmit}>Submit</Button></Table.Cell>
-                        </Table.Row>
-                      )}
-                  </Table.Body>
-                </Table>
-            </div>
-          )
+                    <Table.Body>
+                        {this.state.data.map((i)=>
+                          <Table.Row key={i._id}>
+                            <Table.Cell>{i.driverName}</Table.Cell>
+                            <Table.Cell>{i.departure}</Table.Cell>
+                            <Table.Cell>{i.destination}</Table.Cell>
+                            <Table.Cell>{i.hasSeats}</Table.Cell>
+                            <Table.Cell><Button value={i} onClick={this.passengerSubmit}>Submit</Button></Table.Cell>
+                          </Table.Row>
+                        )}
+                    </Table.Body>
+                  </Table>
+              </div>
+            )
+          }else{
+            return(
+              <div>
+                <Card>
+                  <h1>You've submitted a reques to the Drive, below is the driver's contact information</h1>
+                  <h2>Name: {this.state.theDriver.driverName}</h2>
+                  <h2>Email: {this.state.theDriver.driverEmail}</h2>
+                </Card>
+              </div>
+            )
+          }
         }
       }else{
         return(

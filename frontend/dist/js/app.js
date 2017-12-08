@@ -65697,6 +65697,7 @@ var Passenger = function (_Component) {
           var rideUpdated = JSON.parse(xhr.responseText);
           if (xhr.readyState == 4 && xhr.status === 200) {
             console.log(rideUpdated);
+            alert("You have successfully submit");
           } else {
             console.log("did not update anything");
           }
@@ -65822,87 +65823,115 @@ var Passenger = function (_Component) {
             )
           );
         } else {
-          return _react2.default.createElement(
-            'div',
-            null,
-            _react2.default.createElement(
-              'p',
+          if (!this.state.passengerClicked) {
+            return _react2.default.createElement(
+              'div',
               null,
-              'Result page'
-            ),
-            _react2.default.createElement(
-              _semanticUiReact.Table,
-              { singleLine: true },
               _react2.default.createElement(
-                _semanticUiReact.Table.Header,
+                'p',
                 null,
-                _react2.default.createElement(
-                  _semanticUiReact.Table.Row,
-                  null,
-                  _react2.default.createElement(
-                    _semanticUiReact.Table.HeaderCell,
-                    null,
-                    'Driver Name'
-                  ),
-                  _react2.default.createElement(
-                    _semanticUiReact.Table.HeaderCell,
-                    null,
-                    'Departure'
-                  ),
-                  _react2.default.createElement(
-                    _semanticUiReact.Table.HeaderCell,
-                    null,
-                    'Destination'
-                  ),
-                  _react2.default.createElement(
-                    _semanticUiReact.Table.HeaderCell,
-                    null,
-                    'Available Seats'
-                  ),
-                  _react2.default.createElement(_semanticUiReact.Table.HeaderCell, null)
-                )
+                'Result page'
               ),
               _react2.default.createElement(
-                _semanticUiReact.Table.Body,
-                null,
-                this.state.data.map(function (i) {
-                  return _react2.default.createElement(
+                _semanticUiReact.Table,
+                { singleLine: true },
+                _react2.default.createElement(
+                  _semanticUiReact.Table.Header,
+                  null,
+                  _react2.default.createElement(
                     _semanticUiReact.Table.Row,
-                    { key: i._id },
+                    null,
                     _react2.default.createElement(
-                      _semanticUiReact.Table.Cell,
+                      _semanticUiReact.Table.HeaderCell,
                       null,
-                      i.driverName
+                      'Driver Name'
                     ),
                     _react2.default.createElement(
-                      _semanticUiReact.Table.Cell,
+                      _semanticUiReact.Table.HeaderCell,
                       null,
-                      i.departure
+                      'Departure'
                     ),
                     _react2.default.createElement(
-                      _semanticUiReact.Table.Cell,
+                      _semanticUiReact.Table.HeaderCell,
                       null,
-                      i.destination
+                      'Destination'
                     ),
                     _react2.default.createElement(
-                      _semanticUiReact.Table.Cell,
+                      _semanticUiReact.Table.HeaderCell,
                       null,
-                      i.hasSeats
+                      'Available Seats'
                     ),
-                    _react2.default.createElement(
-                      _semanticUiReact.Table.Cell,
-                      null,
+                    _react2.default.createElement(_semanticUiReact.Table.HeaderCell, null)
+                  )
+                ),
+                _react2.default.createElement(
+                  _semanticUiReact.Table.Body,
+                  null,
+                  this.state.data.map(function (i) {
+                    return _react2.default.createElement(
+                      _semanticUiReact.Table.Row,
+                      { key: i._id },
                       _react2.default.createElement(
-                        _semanticUiReact.Button,
-                        { value: i, onClick: _this4.passengerSubmit },
-                        'Submit'
+                        _semanticUiReact.Table.Cell,
+                        null,
+                        i.driverName
+                      ),
+                      _react2.default.createElement(
+                        _semanticUiReact.Table.Cell,
+                        null,
+                        i.departure
+                      ),
+                      _react2.default.createElement(
+                        _semanticUiReact.Table.Cell,
+                        null,
+                        i.destination
+                      ),
+                      _react2.default.createElement(
+                        _semanticUiReact.Table.Cell,
+                        null,
+                        i.hasSeats
+                      ),
+                      _react2.default.createElement(
+                        _semanticUiReact.Table.Cell,
+                        null,
+                        _react2.default.createElement(
+                          _semanticUiReact.Button,
+                          { value: i, onClick: _this4.passengerSubmit },
+                          'Submit'
+                        )
                       )
-                    )
-                  );
-                })
+                    );
+                  })
+                )
               )
-            )
-          );
+            );
+          } else {
+            return _react2.default.createElement(
+              'div',
+              null,
+              _react2.default.createElement(
+                _semanticUiReact.Card,
+                null,
+                _react2.default.createElement(
+                  'h1',
+                  null,
+                  'You\'ve submitted a reques to the Drive, below is the driver\'s contact information'
+                ),
+                _react2.default.createElement(
+                  'h2',
+                  null,
+                  'Name: ',
+                  this.state.theDriver.driverName
+                ),
+                _react2.default.createElement(
+                  'h2',
+                  null,
+                  'Email: ',
+                  this.state.theDriver.driverEmail
+                )
+              )
+            );
+          }
         }
       } else {
         return _react2.default.createElement(
