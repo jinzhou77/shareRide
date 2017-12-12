@@ -35,7 +35,7 @@ router.get('/', function(req, res, next) {
         time: query.time
     };
     console.log(query.driverName);
-    if(query.driverName===undefined){
+    if(query.driverName===undefined || query.driverName===''){
       rideInfo.find(condition, function (err, rideinfos) {
           if (err) {
               res.status(500).json({message: 'find rideinfos error!', data: {}});

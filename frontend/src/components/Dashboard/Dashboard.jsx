@@ -160,22 +160,20 @@ class Dashboard extends Component {
             )
         }else{
           return(
-
-            <div className="request">
-              <div id="navbar2">
-                <h1>Driver request</h1>
-                <div className='buttons'>
-                  <Link to="/Dashboard"><Button>Home</Button></Link>
-                    <Link to="/About"><Button >About  </Button></Link>
-                    <Link to="/"><Button className = "logoutButton">Logout</Button></Link>
-                  </div>
-                </div>
-              <div>
+            <div>
+            <div id="navbar2">
+              <h1>Driver request</h1>
+              <div className='buttons'>
+                <Link to="/Dashboard"><Button>Home</Button></Link>
+                <Link to="/About"><Button >About  </Button></Link>
+                <Link to="/"><Button className = "logoutButton">Logout</Button></Link>
+              </div>
+            </div>
+            <br/><br/>
+            <div className="Trips">
               {this.state.driverData.map((i,index)=>
                 <div key={index}>
-                  <h2>Trip From {i.departure} to {i.destination}</h2>
 
-                  <div>
                     <Table singleLine>
                       <Table.Header>
                         <Table.Row>
@@ -202,12 +200,10 @@ class Dashboard extends Component {
                         )}
                       </Table.Body>
                     </Table>
-                  </div>
                 </div>
                 )}
-              </div>
-
             </div>
+          </div>
           )
         }
       }else {

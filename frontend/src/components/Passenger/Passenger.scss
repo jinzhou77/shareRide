@@ -13,6 +13,48 @@
   background-size: cover;
 
 }*/
+.Passenger{
+  width:100%;
+  .nav{
+    h1{
+      width:40%;
+      float:left;
+      font-size:150%;
+    }
+    .buttons{
+      width:50%;
+      float:right;
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+}
+.navbar3{
+  h1{
+    width:40%;
+    float:left;
+    font-size:150%;
+  }
+  .buttons{
+    width:50%;
+    float:right;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+.results{
+  .card{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    background-color:#FFFFCC;
+  }
+  .info{
+    padding-top:30px;
+    padding-bottom:30px;
+  }
+}
 .logout{
   position:absolute;
   right:0%;

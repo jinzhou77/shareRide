@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Input, Icon,Dropdown, Card } from 'semantic-ui-react'
+import { Button, Input, Icon,Dropdown, Card,Form } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import DatePicker from 'react-datepicker';
@@ -89,19 +89,19 @@ class Driver extends Component {
           })
       })
   }
-  departureChange(e){
+  departureChange(e,{value}){
     this.setState({
-      departureValue:e.target.value
+      departureValue:value
     })
   }
-  destinationChange(e){
+  destinationChange(e,{value}){
     this.setState({
-      destinationValue:e.target.value
+      destinationValue:value
     })
   }
-  hasSeatsChange(e){
+  hasSeatsChange(e,{value}){
     this.setState({
-      hasSeats:e.target.value
+      hasSeats:value
     })
   }
   handleChange(date) {
@@ -109,46 +109,59 @@ class Driver extends Component {
           startDate: date
       });
   }
-  hasTimeChange(e){
+  hasTimeChange(e,{value}){
     this.setState({
-      time:e.target.value
+      time:value
     })
   }
   render() {
+    console.log(this.state.departureValue);
+    const options= [
+      {key:'Chicago', text:'Chicago',value:"Chicago"},
+      {key:'UIUC', text:'UIUC',value:"UIUC"},
+      {key:"O'hare", text:"O'hare",value:"O'hare"},
+      {key:'Michigan', text:'Michigan',value:"Michigan"},
+    ]
+    const options2=[
+      {keys:'morning',text:'Morning', value:'morning'},
+      {keys:'noon',text:'Noon', value:'noon'},
+      {keys:'afternoon',text:'Afternoon', value:'afternoon'},
+    ]
+    const options3=[
+      {keys:'1', text:"1+", value:'1'},
+      {keys:'3', text:"3+", value:'3'},
+      {keys:'6', text:"6+", value:'6'}
+    ]
     if(this.state.isLoggedIn){
       return(
-        <div>
-          <Link to="/dashboard"><Button>Back</Button></Link>
-          <Link to="/"><Button>Logout</Button></Link>
-          <h1>Hi {this.state.driverName}, this is Driver page</h1>
-          <form onSubmit={this.onSubmit}>
-            <div className="Driver_filter">
-              <div className="search">
-                  <div className = "bg">
+        <div className="Driver">
+
+          <div className="nav">
+            <h1>Hi {this.state.driverName}, this is Driver page</h1>
+            <div className="buttons">
+              <Link to="/dashboard"><Button>Back</Button></Link>
+              <Link to="/"><Button>Logout</Button></Link>
+            </div>
+          </div>
+
+          <form onSubmit={this.onSubmit} className="Driver_filter">
                     <h1>Welcome {this.state.driverName}</h1>
                     <h3>Post the ride details you'd like to offer.</h3>
-                      <p>Departure:</p>
-                      <div class="field">
-                <select value={this.state.departureValue} onChange={this.departureChange}>
-                  <option value=''>Select You departure</option>
-                  <option value="Chicago">Chicago</option>
-                  <option value="O'hare">O'hare</option>
-                  <option value="UIUC">UIUC</option>
-                </select>
-                  <p>Destination:</p>
-                <select   value={this.state.destinationValue} onChange={this.destinationChange}>
-                  <option value=''>Select Your Destination</option>
-                  <option value="Chicago">Chicago</option>
-                  <option value="O'hare">O'hare</option>
-                  <option value="UIUC">UIUC</option>
-                </select>
-                  <p>Seats Available:</p>
-                <select value={this.state.hasSeats} onChange={this.hasSeatsChange}>
-                  <option value=''>Select the Seats Available</option>
-                  <option value='1'>1+</option>
-                  <option value='4'>4+</option>
-                  <option value='100'>100+</option>
-                </select>
+
+
+                    <Form>
+                    <Form.Group widths='equal'>
+                      <Form.Select label="Departure" value={this.state.departureValue} onChange={this.departureChange} options={options} placeholder='Departure' />
+                      <Form.Select label="Destination" value={this.state.destinationValue} onChange={this.destinationChange} options={options} placeholder='Destination' />
+                    </Form.Group>
+                    {/* (e,{value})=>alert(value) */}
+                    <Form.Group widths='equal'>
+                      <Form.Select label="Time Period" value={this.state.time} onChange={this.hasTimeChange} options={options2} placeholder='Time Period' />
+                      <Form.Select label="Seats Available" value={this.state.hasSeats} onChange={this.hasSeatsChange} options={options3} placeholder='Seats Available' />
+                    </Form.Group>
+                    </Form>
+
+
                 <p>Select your Date:</p>
                   <div className="calendar">
                 <DatePicker classname="calendar"
@@ -156,23 +169,12 @@ class Driver extends Component {
                     onChange={this.handleChange}
                 />
                   </div>
-                  <p>Seats Available:</p>
-                <select value={this.state.time} onChange={this.hasTimeChange}>
-                  <option value=''>Select the time period</option>
-                  <option value="morning">Morning</option>
-                  <option value="noon">Noon</option>
-                  <option value="afternoon">Afternoon</option>
-                  <option value="evening">Evening</option>
-                </select>
+
                   <div className = "button">
                       <Button type='submit' >Post</Button>
-                </div>
+                    </div>
+                  </form>
               </div>
-            </div>
-            </div>
-            </div>
-          </form>
-        </div>
       )
     }else{
       return(

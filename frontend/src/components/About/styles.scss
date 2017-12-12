@@ -7,7 +7,6 @@
         float:left;
       }
       .buttons{
-
         padding-top:10px;
         padding-bottom:10px;
         float:right;
@@ -32,13 +31,13 @@
   //   background-size: cover;
   // }
   @media only screen and (max-width: 639px) {
-    .About{
-      background-color: yellow;
+    body{
+      background-color: #e6faff;
     }
   }
   @media (min-width: 640px) and (max-width: 1023px) {
-    .About{
-      background-color: black;
+    body{
+      background-color:#e6faff;
     }
   }
   @media (min-width: 1024px){

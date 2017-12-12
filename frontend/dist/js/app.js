@@ -5132,7 +5132,7 @@ exports.default = function (subClass, superClass) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseDifference = __webpack_require__(261),
-    baseRest = __webpack_require__(42),
+    baseRest = __webpack_require__(45),
     isArrayLikeObject = __webpack_require__(104);
 
 /**
@@ -5169,7 +5169,7 @@ module.exports = without;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseInvoke = __webpack_require__(622),
-    baseRest = __webpack_require__(42);
+    baseRest = __webpack_require__(45);
 
 /**
  * Invokes the method at `path` of `object`.
@@ -5471,7 +5471,7 @@ module.exports = keys;
 
 var baseMatches = __webpack_require__(665),
     baseMatchesProperty = __webpack_require__(678),
-    identity = __webpack_require__(43),
+    identity = __webpack_require__(46),
     isArray = __webpack_require__(13),
     property = __webpack_require__(680);
 
@@ -5925,7 +5925,7 @@ module.exports = {
 
 var store = __webpack_require__(150)('wks');
 var uid = __webpack_require__(86);
-var Symbol = __webpack_require__(40).Symbol;
+var Symbol = __webpack_require__(43).Symbol;
 var USE_SYMBOL = typeof Symbol == 'function';
 
 var $exports = module.exports = function (name) {
@@ -5975,7 +5975,7 @@ module.exports = isObjectLike;
 /* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isFunction = __webpack_require__(54),
+var isFunction = __webpack_require__(55),
     isLength = __webpack_require__(167);
 
 /**
@@ -6431,257 +6431,6 @@ FormField.propTypes = process.env.NODE_ENV !== "production" ? {
 
 /***/ }),
 /* 38 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(process) {/**
- * Copyright 2013-2015, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- */
-
-
-
-/**
- * Use invariant() to assert state which your program assumes to be true.
- *
- * Provide sprintf-style format (only %s is supported) and arguments
- * to provide information about what broke and what you were
- * expecting.
- *
- * The invariant message will be stripped in production, but the invariant
- * will remain to ensure logic does not differ in production.
- */
-
-var invariant = function(condition, format, a, b, c, d, e, f) {
-  if (process.env.NODE_ENV !== 'production') {
-    if (format === undefined) {
-      throw new Error('invariant requires an error message argument');
-    }
-  }
-
-  if (!condition) {
-    var error;
-    if (format === undefined) {
-      error = new Error(
-        'Minified exception occurred; use the non-minified dev environment ' +
-        'for the full error message and additional helpful warnings.'
-      );
-    } else {
-      var args = [a, b, c, d, e, f];
-      var argIndex = 0;
-      error = new Error(
-        format.replace(/%s/g, function() { return args[argIndex++]; })
-      );
-      error.name = 'Invariant Violation';
-    }
-
-    error.framesToPop = 1; // we don't care about invariant's own frame
-    throw error;
-  }
-};
-
-module.exports = invariant;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
-
-/***/ }),
-/* 39 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var global = __webpack_require__(40);
-var core = __webpack_require__(19);
-var ctx = __webpack_require__(144);
-var hide = __webpack_require__(58);
-var PROTOTYPE = 'prototype';
-
-var $export = function (type, name, source) {
-  var IS_FORCED = type & $export.F;
-  var IS_GLOBAL = type & $export.G;
-  var IS_STATIC = type & $export.S;
-  var IS_PROTO = type & $export.P;
-  var IS_BIND = type & $export.B;
-  var IS_WRAP = type & $export.W;
-  var exports = IS_GLOBAL ? core : core[name] || (core[name] = {});
-  var expProto = exports[PROTOTYPE];
-  var target = IS_GLOBAL ? global : IS_STATIC ? global[name] : (global[name] || {})[PROTOTYPE];
-  var key, own, out;
-  if (IS_GLOBAL) source = name;
-  for (key in source) {
-    // contains in native
-    own = !IS_FORCED && target && target[key] !== undefined;
-    if (own && key in exports) continue;
-    // export native or passed
-    out = own ? target[key] : source[key];
-    // prevent global pollution for namespaces
-    exports[key] = IS_GLOBAL && typeof target[key] != 'function' ? source[key]
-    // bind timers to global for call from export context
-    : IS_BIND && own ? ctx(out, global)
-    // wrap global constructors for prevent change them in library
-    : IS_WRAP && target[key] == out ? (function (C) {
-      var F = function (a, b, c) {
-        if (this instanceof C) {
-          switch (arguments.length) {
-            case 0: return new C();
-            case 1: return new C(a);
-            case 2: return new C(a, b);
-          } return new C(a, b, c);
-        } return C.apply(this, arguments);
-      };
-      F[PROTOTYPE] = C[PROTOTYPE];
-      return F;
-    // make static versions for prototype methods
-    })(out) : IS_PROTO && typeof out == 'function' ? ctx(Function.call, out) : out;
-    // export proto methods to core.%CONSTRUCTOR%.methods.%NAME%
-    if (IS_PROTO) {
-      (exports.virtual || (exports.virtual = {}))[key] = out;
-      // export proto methods to core.%CONSTRUCTOR%.prototype.%NAME%
-      if (type & $export.R && expProto && !expProto[key]) hide(expProto, key, out);
-    }
-  }
-};
-// type bitmap
-$export.F = 1;   // forced
-$export.G = 2;   // global
-$export.S = 4;   // static
-$export.P = 8;   // proto
-$export.B = 16;  // bind
-$export.W = 32;  // wrap
-$export.U = 64;  // safe
-$export.R = 128; // real proto method for `library`
-module.exports = $export;
-
-
-/***/ }),
-/* 40 */
-/***/ (function(module, exports) {
-
-// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
-var global = module.exports = typeof window != 'undefined' && window.Math == Math
-  ? window : typeof self != 'undefined' && self.Math == Math ? self
-  // eslint-disable-next-line no-new-func
-  : Function('return this')();
-if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
-
-
-/***/ }),
-/* 41 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var anObject = __webpack_require__(48);
-var IE8_DOM_DEFINE = __webpack_require__(241);
-var toPrimitive = __webpack_require__(145);
-var dP = Object.defineProperty;
-
-exports.f = __webpack_require__(49) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
-  anObject(O);
-  P = toPrimitive(P, true);
-  anObject(Attributes);
-  if (IE8_DOM_DEFINE) try {
-    return dP(O, P, Attributes);
-  } catch (e) { /* empty */ }
-  if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported!');
-  if ('value' in Attributes) O[P] = Attributes.value;
-  return O;
-};
-
-
-/***/ }),
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var identity = __webpack_require__(43),
-    overRest = __webpack_require__(257),
-    setToString = __webpack_require__(164);
-
-/**
- * The base implementation of `_.rest` which doesn't validate or coerce arguments.
- *
- * @private
- * @param {Function} func The function to apply a rest parameter to.
- * @param {number} [start=func.length-1] The start position of the rest parameter.
- * @returns {Function} Returns the new function.
- */
-function baseRest(func, start) {
-  return setToString(overRest(func, start, identity), func + '');
-}
-
-module.exports = baseRest;
-
-
-/***/ }),
-/* 43 */
-/***/ (function(module, exports) {
-
-/**
- * This method returns the first argument it receives.
- *
- * @static
- * @since 0.1.0
- * @memberOf _
- * @category Util
- * @param {*} value Any value.
- * @returns {*} Returns `value`.
- * @example
- *
- * var object = { 'a': 1 };
- *
- * console.log(_.identity(object) === object);
- * // => true
- */
-function identity(value) {
-  return value;
-}
-
-module.exports = identity;
-
-
-/***/ }),
-/* 44 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseHas = __webpack_require__(685),
-    hasPath = __webpack_require__(282);
-
-/**
- * Checks if `path` is a direct property of `object`.
- *
- * @static
- * @since 0.1.0
- * @memberOf _
- * @category Object
- * @param {Object} object The object to query.
- * @param {Array|string} path The path to check.
- * @returns {boolean} Returns `true` if `path` exists, else `false`.
- * @example
- *
- * var object = { 'a': { 'b': 2 } };
- * var other = _.create({ 'a': _.create({ 'b': 2 }) });
- *
- * _.has(object, 'a');
- * // => true
- *
- * _.has(object, 'a.b');
- * // => true
- *
- * _.has(object, ['a', 'b']);
- * // => true
- *
- * _.has(other, 'a');
- * // => false
- */
-function has(object, path) {
-  return object != null && hasPath(object, path, baseHas);
-}
-
-module.exports = has;
-
-
-/***/ }),
-/* 45 */
 /***/ (function(module, exports) {
 
 /*
@@ -6763,7 +6512,7 @@ function toComment(sourceMap) {
 
 
 /***/ }),
-/* 46 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -7135,7 +6884,7 @@ function updateLink (link, options, obj) {
 
 
 /***/ }),
-/* 47 */
+/* 40 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7194,198 +6943,258 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
-/* 48 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isObject = __webpack_require__(67);
-module.exports = function (it) {
-  if (!isObject(it)) throw TypeError(it + ' is not an object!');
-  return it;
+"use strict";
+/* WEBPACK VAR INJECTION */(function(process) {/**
+ * Copyright 2013-2015, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+
+
+
+/**
+ * Use invariant() to assert state which your program assumes to be true.
+ *
+ * Provide sprintf-style format (only %s is supported) and arguments
+ * to provide information about what broke and what you were
+ * expecting.
+ *
+ * The invariant message will be stripped in production, but the invariant
+ * will remain to ensure logic does not differ in production.
+ */
+
+var invariant = function(condition, format, a, b, c, d, e, f) {
+  if (process.env.NODE_ENV !== 'production') {
+    if (format === undefined) {
+      throw new Error('invariant requires an error message argument');
+    }
+  }
+
+  if (!condition) {
+    var error;
+    if (format === undefined) {
+      error = new Error(
+        'Minified exception occurred; use the non-minified dev environment ' +
+        'for the full error message and additional helpful warnings.'
+      );
+    } else {
+      var args = [a, b, c, d, e, f];
+      var argIndex = 0;
+      error = new Error(
+        format.replace(/%s/g, function() { return args[argIndex++]; })
+      );
+      error.name = 'Invariant Violation';
+    }
+
+    error.framesToPop = 1; // we don't care about invariant's own frame
+    throw error;
+  }
 };
 
+module.exports = invariant;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 49 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// Thank's IE8 for his funny defineProperty
-module.exports = !__webpack_require__(59)(function () {
-  return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
-});
+var global = __webpack_require__(43);
+var core = __webpack_require__(19);
+var ctx = __webpack_require__(144);
+var hide = __webpack_require__(58);
+var PROTOTYPE = 'prototype';
+
+var $export = function (type, name, source) {
+  var IS_FORCED = type & $export.F;
+  var IS_GLOBAL = type & $export.G;
+  var IS_STATIC = type & $export.S;
+  var IS_PROTO = type & $export.P;
+  var IS_BIND = type & $export.B;
+  var IS_WRAP = type & $export.W;
+  var exports = IS_GLOBAL ? core : core[name] || (core[name] = {});
+  var expProto = exports[PROTOTYPE];
+  var target = IS_GLOBAL ? global : IS_STATIC ? global[name] : (global[name] || {})[PROTOTYPE];
+  var key, own, out;
+  if (IS_GLOBAL) source = name;
+  for (key in source) {
+    // contains in native
+    own = !IS_FORCED && target && target[key] !== undefined;
+    if (own && key in exports) continue;
+    // export native or passed
+    out = own ? target[key] : source[key];
+    // prevent global pollution for namespaces
+    exports[key] = IS_GLOBAL && typeof target[key] != 'function' ? source[key]
+    // bind timers to global for call from export context
+    : IS_BIND && own ? ctx(out, global)
+    // wrap global constructors for prevent change them in library
+    : IS_WRAP && target[key] == out ? (function (C) {
+      var F = function (a, b, c) {
+        if (this instanceof C) {
+          switch (arguments.length) {
+            case 0: return new C();
+            case 1: return new C(a);
+            case 2: return new C(a, b);
+          } return new C(a, b, c);
+        } return C.apply(this, arguments);
+      };
+      F[PROTOTYPE] = C[PROTOTYPE];
+      return F;
+    // make static versions for prototype methods
+    })(out) : IS_PROTO && typeof out == 'function' ? ctx(Function.call, out) : out;
+    // export proto methods to core.%CONSTRUCTOR%.methods.%NAME%
+    if (IS_PROTO) {
+      (exports.virtual || (exports.virtual = {}))[key] = out;
+      // export proto methods to core.%CONSTRUCTOR%.prototype.%NAME%
+      if (type & $export.R && expProto && !expProto[key]) hide(expProto, key, out);
+    }
+  }
+};
+// type bitmap
+$export.F = 1;   // forced
+$export.G = 2;   // global
+$export.S = 4;   // static
+$export.P = 8;   // proto
+$export.B = 16;  // bind
+$export.W = 32;  // wrap
+$export.U = 64;  // safe
+$export.R = 128; // real proto method for `library`
+module.exports = $export;
 
 
 /***/ }),
-/* 50 */
+/* 43 */
 /***/ (function(module, exports) {
 
-var hasOwnProperty = {}.hasOwnProperty;
-module.exports = function (it, key) {
-  return hasOwnProperty.call(it, key);
+// https://github.com/zloirock/core-js/issues/86#issuecomment-115759028
+var global = module.exports = typeof window != 'undefined' && window.Math == Math
+  ? window : typeof self != 'undefined' && self.Math == Math ? self
+  // eslint-disable-next-line no-new-func
+  : Function('return this')();
+if (typeof __g == 'number') __g = global; // eslint-disable-line no-undef
+
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var anObject = __webpack_require__(49);
+var IE8_DOM_DEFINE = __webpack_require__(241);
+var toPrimitive = __webpack_require__(145);
+var dP = Object.defineProperty;
+
+exports.f = __webpack_require__(50) ? Object.defineProperty : function defineProperty(O, P, Attributes) {
+  anObject(O);
+  P = toPrimitive(P, true);
+  anObject(Attributes);
+  if (IE8_DOM_DEFINE) try {
+    return dP(O, P, Attributes);
+  } catch (e) { /* empty */ }
+  if ('get' in Attributes || 'set' in Attributes) throw TypeError('Accessors not supported!');
+  if ('value' in Attributes) O[P] = Attributes.value;
+  return O;
 };
 
 
 /***/ }),
-/* 51 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// to indexed object, toObject with fallback for non-array-like ES3 strings
-var IObject = __webpack_require__(244);
-var defined = __webpack_require__(147);
-module.exports = function (it) {
-  return IObject(defined(it));
-};
-
-
-/***/ }),
-/* 52 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseGetTag = __webpack_require__(30),
-    isObjectLike = __webpack_require__(28);
-
-/** `Object#toString` result references. */
-var symbolTag = '[object Symbol]';
+var identity = __webpack_require__(46),
+    overRest = __webpack_require__(257),
+    setToString = __webpack_require__(164);
 
 /**
- * Checks if `value` is classified as a `Symbol` primitive or object.
- *
- * @static
- * @memberOf _
- * @since 4.0.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
- * @example
- *
- * _.isSymbol(Symbol.iterator);
- * // => true
- *
- * _.isSymbol('abc');
- * // => false
- */
-function isSymbol(value) {
-  return typeof value == 'symbol' ||
-    (isObjectLike(value) && baseGetTag(value) == symbolTag);
-}
-
-module.exports = isSymbol;
-
-
-/***/ }),
-/* 53 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseIsNative = __webpack_require__(629),
-    getValue = __webpack_require__(632);
-
-/**
- * Gets the native function at `key` of `object`.
+ * The base implementation of `_.rest` which doesn't validate or coerce arguments.
  *
  * @private
- * @param {Object} object The object to query.
- * @param {string} key The key of the method to get.
- * @returns {*} Returns the function if it's native, else `undefined`.
+ * @param {Function} func The function to apply a rest parameter to.
+ * @param {number} [start=func.length-1] The start position of the rest parameter.
+ * @returns {Function} Returns the new function.
  */
-function getNative(object, key) {
-  var value = getValue(object, key);
-  return baseIsNative(value) ? value : undefined;
+function baseRest(func, start) {
+  return setToString(overRest(func, start, identity), func + '');
 }
 
-module.exports = getNative;
+module.exports = baseRest;
 
 
 /***/ }),
-/* 54 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseGetTag = __webpack_require__(30),
-    isObject = __webpack_require__(21);
-
-/** `Object#toString` result references. */
-var asyncTag = '[object AsyncFunction]',
-    funcTag = '[object Function]',
-    genTag = '[object GeneratorFunction]',
-    proxyTag = '[object Proxy]';
+/* 46 */
+/***/ (function(module, exports) {
 
 /**
- * Checks if `value` is classified as a `Function` object.
+ * This method returns the first argument it receives.
  *
  * @static
- * @memberOf _
  * @since 0.1.0
- * @category Lang
- * @param {*} value The value to check.
- * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+ * @memberOf _
+ * @category Util
+ * @param {*} value Any value.
+ * @returns {*} Returns `value`.
  * @example
  *
- * _.isFunction(_);
+ * var object = { 'a': 1 };
+ *
+ * console.log(_.identity(object) === object);
+ * // => true
+ */
+function identity(value) {
+  return value;
+}
+
+module.exports = identity;
+
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseHas = __webpack_require__(685),
+    hasPath = __webpack_require__(282);
+
+/**
+ * Checks if `path` is a direct property of `object`.
+ *
+ * @static
+ * @since 0.1.0
+ * @memberOf _
+ * @category Object
+ * @param {Object} object The object to query.
+ * @param {Array|string} path The path to check.
+ * @returns {boolean} Returns `true` if `path` exists, else `false`.
+ * @example
+ *
+ * var object = { 'a': { 'b': 2 } };
+ * var other = _.create({ 'a': _.create({ 'b': 2 }) });
+ *
+ * _.has(object, 'a');
  * // => true
  *
- * _.isFunction(/abc/);
+ * _.has(object, 'a.b');
+ * // => true
+ *
+ * _.has(object, ['a', 'b']);
+ * // => true
+ *
+ * _.has(other, 'a');
  * // => false
  */
-function isFunction(value) {
-  if (!isObject(value)) {
-    return false;
-  }
-  // The use of `Object#toString` avoids issues with the `typeof` operator
-  // in Safari 9 which returns 'object' for typed arrays and other constructors.
-  var tag = baseGetTag(value);
-  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
+function has(object, path) {
+  return object != null && hasPath(object, path, baseHas);
 }
 
-module.exports = isFunction;
+module.exports = has;
 
 
 /***/ }),
-/* 55 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var isSymbol = __webpack_require__(52);
-
-/** Used as references for various `Number` constants. */
-var INFINITY = 1 / 0;
-
-/**
- * Converts `value` to a string key if it's not a string or symbol.
- *
- * @private
- * @param {*} value The value to inspect.
- * @returns {string|symbol} Returns the key.
- */
-function toKey(value) {
-  if (typeof value == 'string' || isSymbol(value)) {
-    return value;
-  }
-  var result = (value + '');
-  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
-}
-
-module.exports = toKey;
-
-
-/***/ }),
-/* 56 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var baseForOwn = __webpack_require__(169),
-    createBaseEach = __webpack_require__(664);
-
-/**
- * The base implementation of `_.forEach` without support for iteratee shorthands.
- *
- * @private
- * @param {Array|Object} collection The collection to iterate over.
- * @param {Function} iteratee The function invoked per iteration.
- * @returns {Array|Object} Returns `collection`.
- */
-var baseEach = createBaseEach(baseForOwn);
-
-module.exports = baseEach;
-
-
-/***/ }),
-/* 57 */
+/* 48 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7896,12 +7705,203 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 /***/ }),
+/* 49 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isObject = __webpack_require__(67);
+module.exports = function (it) {
+  if (!isObject(it)) throw TypeError(it + ' is not an object!');
+  return it;
+};
+
+
+/***/ }),
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// Thank's IE8 for his funny defineProperty
+module.exports = !__webpack_require__(59)(function () {
+  return Object.defineProperty({}, 'a', { get: function () { return 7; } }).a != 7;
+});
+
+
+/***/ }),
+/* 51 */
+/***/ (function(module, exports) {
+
+var hasOwnProperty = {}.hasOwnProperty;
+module.exports = function (it, key) {
+  return hasOwnProperty.call(it, key);
+};
+
+
+/***/ }),
+/* 52 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// to indexed object, toObject with fallback for non-array-like ES3 strings
+var IObject = __webpack_require__(244);
+var defined = __webpack_require__(147);
+module.exports = function (it) {
+  return IObject(defined(it));
+};
+
+
+/***/ }),
+/* 53 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseGetTag = __webpack_require__(30),
+    isObjectLike = __webpack_require__(28);
+
+/** `Object#toString` result references. */
+var symbolTag = '[object Symbol]';
+
+/**
+ * Checks if `value` is classified as a `Symbol` primitive or object.
+ *
+ * @static
+ * @memberOf _
+ * @since 4.0.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a symbol, else `false`.
+ * @example
+ *
+ * _.isSymbol(Symbol.iterator);
+ * // => true
+ *
+ * _.isSymbol('abc');
+ * // => false
+ */
+function isSymbol(value) {
+  return typeof value == 'symbol' ||
+    (isObjectLike(value) && baseGetTag(value) == symbolTag);
+}
+
+module.exports = isSymbol;
+
+
+/***/ }),
+/* 54 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseIsNative = __webpack_require__(629),
+    getValue = __webpack_require__(632);
+
+/**
+ * Gets the native function at `key` of `object`.
+ *
+ * @private
+ * @param {Object} object The object to query.
+ * @param {string} key The key of the method to get.
+ * @returns {*} Returns the function if it's native, else `undefined`.
+ */
+function getNative(object, key) {
+  var value = getValue(object, key);
+  return baseIsNative(value) ? value : undefined;
+}
+
+module.exports = getNative;
+
+
+/***/ }),
+/* 55 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseGetTag = __webpack_require__(30),
+    isObject = __webpack_require__(21);
+
+/** `Object#toString` result references. */
+var asyncTag = '[object AsyncFunction]',
+    funcTag = '[object Function]',
+    genTag = '[object GeneratorFunction]',
+    proxyTag = '[object Proxy]';
+
+/**
+ * Checks if `value` is classified as a `Function` object.
+ *
+ * @static
+ * @memberOf _
+ * @since 0.1.0
+ * @category Lang
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is a function, else `false`.
+ * @example
+ *
+ * _.isFunction(_);
+ * // => true
+ *
+ * _.isFunction(/abc/);
+ * // => false
+ */
+function isFunction(value) {
+  if (!isObject(value)) {
+    return false;
+  }
+  // The use of `Object#toString` avoids issues with the `typeof` operator
+  // in Safari 9 which returns 'object' for typed arrays and other constructors.
+  var tag = baseGetTag(value);
+  return tag == funcTag || tag == genTag || tag == asyncTag || tag == proxyTag;
+}
+
+module.exports = isFunction;
+
+
+/***/ }),
+/* 56 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isSymbol = __webpack_require__(53);
+
+/** Used as references for various `Number` constants. */
+var INFINITY = 1 / 0;
+
+/**
+ * Converts `value` to a string key if it's not a string or symbol.
+ *
+ * @private
+ * @param {*} value The value to inspect.
+ * @returns {string|symbol} Returns the key.
+ */
+function toKey(value) {
+  if (typeof value == 'string' || isSymbol(value)) {
+    return value;
+  }
+  var result = (value + '');
+  return (result == '0' && (1 / value) == -INFINITY) ? '-0' : result;
+}
+
+module.exports = toKey;
+
+
+/***/ }),
+/* 57 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var baseForOwn = __webpack_require__(169),
+    createBaseEach = __webpack_require__(664);
+
+/**
+ * The base implementation of `_.forEach` without support for iteratee shorthands.
+ *
+ * @private
+ * @param {Array|Object} collection The collection to iterate over.
+ * @param {Function} iteratee The function invoked per iteration.
+ * @returns {Array|Object} Returns `collection`.
+ */
+var baseEach = createBaseEach(baseForOwn);
+
+module.exports = baseEach;
+
+
+/***/ }),
 /* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var dP = __webpack_require__(41);
+var dP = __webpack_require__(44);
 var createDesc = __webpack_require__(68);
-module.exports = __webpack_require__(49) ? function (object, key, value) {
+module.exports = __webpack_require__(50) ? function (object, key, value) {
   return dP.f(object, key, createDesc(1, value));
 } : function (object, key, value) {
   object[key] = value;
@@ -7973,7 +7973,7 @@ module.exports = Symbol;
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayEach = __webpack_require__(74),
-    baseEach = __webpack_require__(56),
+    baseEach = __webpack_require__(57),
     castFunction = __webpack_require__(284),
     isArray = __webpack_require__(13);
 
@@ -8666,7 +8666,7 @@ module.exports = emptyFunction;
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_warning__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_warning___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_warning__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_invariant__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_react__);
@@ -9028,7 +9028,7 @@ module.exports = apply;
 /* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(53);
+var getNative = __webpack_require__(54);
 
 /* Built-in method references that are verified to be native. */
 var nativeCreate = getNative(Object, 'create');
@@ -9130,7 +9130,7 @@ module.exports = getMapData;
 /***/ (function(module, exports, __webpack_require__) {
 
 var castPath = __webpack_require__(69),
-    toKey = __webpack_require__(55);
+    toKey = __webpack_require__(56);
 
 /**
  * The base implementation of `_.get` without support for default values.
@@ -9471,7 +9471,7 @@ module.exports = isUndefined;
 /***/ (function(module, exports, __webpack_require__) {
 
 var isObject = __webpack_require__(21),
-    isSymbol = __webpack_require__(52);
+    isSymbol = __webpack_require__(53);
 
 /** Used as references for various `Number` constants. */
 var NAN = 0 / 0;
@@ -10335,7 +10335,7 @@ Icon.create = Object(__WEBPACK_IMPORTED_MODULE_9__lib__["l" /* createShorthandFa
 /***/ (function(module, exports, __webpack_require__) {
 
 var arrayReduce = __webpack_require__(121),
-    baseEach = __webpack_require__(56),
+    baseEach = __webpack_require__(57),
     baseIteratee = __webpack_require__(23),
     baseReduce = __webpack_require__(813),
     isArray = __webpack_require__(13);
@@ -11215,7 +11215,7 @@ var createPath = exports.createPath = function createPath(location) {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_warning__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_warning___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_warning__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_invariant__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_react__);
@@ -11535,7 +11535,7 @@ module.exports = function (key) {
 /* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var global = __webpack_require__(40);
+var global = __webpack_require__(43);
 var SHARED = '__core-js_shared__';
 var store = global[SHARED] || (global[SHARED] = {});
 module.exports = function (key) {
@@ -11572,7 +11572,7 @@ module.exports = true;
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
-var anObject = __webpack_require__(48);
+var anObject = __webpack_require__(49);
 var dPs = __webpack_require__(600);
 var enumBugKeys = __webpack_require__(151);
 var IE_PROTO = __webpack_require__(149)('IE_PROTO');
@@ -11618,8 +11618,8 @@ module.exports = Object.create || function create(O, Properties) {
 /* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var def = __webpack_require__(41).f;
-var has = __webpack_require__(50);
+var def = __webpack_require__(44).f;
+var has = __webpack_require__(51);
 var TAG = __webpack_require__(27)('toStringTag');
 
 module.exports = function (it, tag, stat) {
@@ -11632,7 +11632,7 @@ module.exports = function (it, tag, stat) {
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(602);
-var global = __webpack_require__(40);
+var global = __webpack_require__(43);
 var hide = __webpack_require__(58);
 var Iterators = __webpack_require__(61);
 var TO_STRING_TAG = __webpack_require__(27)('toStringTag');
@@ -11663,11 +11663,11 @@ exports.f = __webpack_require__(27);
 /* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var global = __webpack_require__(40);
+var global = __webpack_require__(43);
 var core = __webpack_require__(19);
 var LIBRARY = __webpack_require__(153);
 var wksExt = __webpack_require__(157);
-var defineProperty = __webpack_require__(41).f;
+var defineProperty = __webpack_require__(44).f;
 module.exports = function (name) {
   var $Symbol = core.Symbol || (core.Symbol = LIBRARY ? {} : global.Symbol || {});
   if (name.charAt(0) != '_' && !(name in $Symbol)) defineProperty($Symbol, name, { value: wksExt.f(name) });
@@ -11680,13 +11680,13 @@ module.exports = function (name) {
 
 var pIE = __webpack_require__(87);
 var createDesc = __webpack_require__(68);
-var toIObject = __webpack_require__(51);
+var toIObject = __webpack_require__(52);
 var toPrimitive = __webpack_require__(145);
-var has = __webpack_require__(50);
+var has = __webpack_require__(51);
 var IE8_DOM_DEFINE = __webpack_require__(241);
 var gOPD = Object.getOwnPropertyDescriptor;
 
-exports.f = __webpack_require__(49) ? gOPD : function getOwnPropertyDescriptor(O, P) {
+exports.f = __webpack_require__(50) ? gOPD : function getOwnPropertyDescriptor(O, P) {
   O = toIObject(O);
   P = toPrimitive(P, true);
   if (IE8_DOM_DEFINE) try {
@@ -11701,7 +11701,7 @@ exports.f = __webpack_require__(49) ? gOPD : function getOwnPropertyDescriptor(O
 /***/ (function(module, exports, __webpack_require__) {
 
 var isArray = __webpack_require__(13),
-    isSymbol = __webpack_require__(52);
+    isSymbol = __webpack_require__(53);
 
 /** Used to match property names within property paths. */
 var reIsDeepProp = /\.|\[(?:[^[\]]*|(["'])(?:(?!\1)[^\\]|\\.)*?\1)\]/,
@@ -11773,7 +11773,7 @@ module.exports = MapCache;
 /* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(53),
+var getNative = __webpack_require__(54),
     root = __webpack_require__(20);
 
 /* Built-in method references that are verified to be native. */
@@ -11789,7 +11789,7 @@ module.exports = Map;
 var Symbol = __webpack_require__(62),
     arrayMap = __webpack_require__(32),
     isArray = __webpack_require__(13),
-    isSymbol = __webpack_require__(52);
+    isSymbol = __webpack_require__(53);
 
 /** Used as references for various `Number` constants. */
 var INFINITY = 1 / 0;
@@ -15977,7 +15977,7 @@ function valueEqual(a, b) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_invariant__);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -16070,7 +16070,7 @@ Prompt.contextTypes = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_warning__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_warning___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_warning__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_invariant__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_invariant__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_invariant__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_history__ = __webpack_require__(575);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -16240,7 +16240,7 @@ var isExtraneousPopstateEvent = function isExtraneousPopstateEvent(event) {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_warning__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_warning___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_warning__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_invariant__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_react__);
@@ -16427,7 +16427,7 @@ StaticRouter.childContextTypes = {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_prop_types___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_prop_types__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_warning__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_warning___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_warning__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_invariant__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_invariant__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_invariant__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__matchPath__ = __webpack_require__(83);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -16559,7 +16559,7 @@ var withRouter = function withRouter(Component) {
 /* 241 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = !__webpack_require__(49) && !__webpack_require__(59)(function () {
+module.exports = !__webpack_require__(50) && !__webpack_require__(59)(function () {
   return Object.defineProperty(__webpack_require__(242)('div'), 'a', { get: function () { return 7; } }).a != 7;
 });
 
@@ -16569,7 +16569,7 @@ module.exports = !__webpack_require__(49) && !__webpack_require__(59)(function (
 /***/ (function(module, exports, __webpack_require__) {
 
 var isObject = __webpack_require__(67);
-var document = __webpack_require__(40).document;
+var document = __webpack_require__(43).document;
 // typeof document.createElement is 'object' in old IE
 var is = isObject(document) && isObject(document.createElement);
 module.exports = function (it) {
@@ -16581,8 +16581,8 @@ module.exports = function (it) {
 /* 243 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var has = __webpack_require__(50);
-var toIObject = __webpack_require__(51);
+var has = __webpack_require__(51);
+var toIObject = __webpack_require__(52);
 var arrayIndexOf = __webpack_require__(592)(false);
 var IE_PROTO = __webpack_require__(149)('IE_PROTO');
 
@@ -16637,10 +16637,10 @@ module.exports = { "default": __webpack_require__(594), __esModule: true };
 "use strict";
 
 var LIBRARY = __webpack_require__(153);
-var $export = __webpack_require__(39);
+var $export = __webpack_require__(42);
 var redefine = __webpack_require__(248);
 var hide = __webpack_require__(58);
-var has = __webpack_require__(50);
+var has = __webpack_require__(51);
 var Iterators = __webpack_require__(61);
 var $iterCreate = __webpack_require__(599);
 var setToStringTag = __webpack_require__(155);
@@ -16719,7 +16719,7 @@ module.exports = __webpack_require__(58);
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
-var has = __webpack_require__(50);
+var has = __webpack_require__(51);
 var toObject = __webpack_require__(88);
 var IE_PROTO = __webpack_require__(149)('IE_PROTO');
 var ObjectProto = Object.prototype;
@@ -17001,7 +17001,7 @@ module.exports = overRest;
 /* 258 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(53);
+var getNative = __webpack_require__(54);
 
 var defineProperty = (function() {
   try {
@@ -17063,7 +17063,7 @@ module.exports = shortOut;
 
 var baseDifference = __webpack_require__(261),
     baseFlatten = __webpack_require__(102),
-    baseRest = __webpack_require__(42),
+    baseRest = __webpack_require__(45),
     isArrayLikeObject = __webpack_require__(104);
 
 /**
@@ -17688,7 +17688,7 @@ module.exports = stubArray;
 /* 277 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(53),
+var getNative = __webpack_require__(54),
     root = __webpack_require__(20);
 
 /* Built-in method references that are verified to be native. */
@@ -17701,7 +17701,7 @@ module.exports = Set;
 /* 278 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(53),
+var getNative = __webpack_require__(54),
     root = __webpack_require__(20);
 
 /* Built-in method references that are verified to be native. */
@@ -17806,7 +17806,7 @@ var castPath = __webpack_require__(69),
     isArray = __webpack_require__(13),
     isIndex = __webpack_require__(72),
     isLength = __webpack_require__(167),
-    toKey = __webpack_require__(55);
+    toKey = __webpack_require__(56);
 
 /**
  * Checks if `path` exists on `object`.
@@ -17866,7 +17866,7 @@ module.exports = baseProperty;
 /* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var identity = __webpack_require__(43);
+var identity = __webpack_require__(46);
 
 /**
  * Casts `value` to `identity` if it's not a function.
@@ -18038,7 +18038,7 @@ module.exports = findIndex;
 /* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var identity = __webpack_require__(43),
+var identity = __webpack_require__(46),
     metaMap = __webpack_require__(290);
 
 /**
@@ -18897,7 +18897,7 @@ var assignValue = __webpack_require__(119),
     castPath = __webpack_require__(69),
     isIndex = __webpack_require__(72),
     isObject = __webpack_require__(21),
-    toKey = __webpack_require__(55);
+    toKey = __webpack_require__(56);
 
 /**
  * The base implementation of `_.set`.
@@ -18994,7 +18994,7 @@ module.exports = func;
 /* 312 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseEach = __webpack_require__(56),
+var baseEach = __webpack_require__(57),
     isArrayLike = __webpack_require__(29);
 
 /**
@@ -19023,7 +19023,7 @@ module.exports = baseMap;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseSum = __webpack_require__(772),
-    identity = __webpack_require__(43);
+    identity = __webpack_require__(46);
 
 /**
  * Computes the sum of the values in `array`.
@@ -21046,7 +21046,7 @@ exports.default = function get(object, property, receiver) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // most Object methods by ES6 should accept primitives
-var $export = __webpack_require__(39);
+var $export = __webpack_require__(42);
 var core = __webpack_require__(19);
 var fails = __webpack_require__(59);
 module.exports = function (KEY, exec) {
@@ -22063,7 +22063,7 @@ Transition.propTypes = process.env.NODE_ENV !== "production" ? {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_lodash_values___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_lodash_values__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_lodash_get__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_lodash_get___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_lodash_get__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_lodash_has__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_lodash_has__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_lodash_has___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_lodash_has__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_lodash_forEach__ = __webpack_require__(63);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_lodash_forEach___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8_lodash_forEach__);
@@ -42520,7 +42520,7 @@ var transform;
 var options = {"hmr":true}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(46)(content, options);
+var update = __webpack_require__(39)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -42551,7 +42551,7 @@ var _reactDom = __webpack_require__(80);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _reactRouterDom = __webpack_require__(47);
+var _reactRouterDom = __webpack_require__(40);
 
 var _Home = __webpack_require__(584);
 
@@ -42577,11 +42577,11 @@ var _Passenger = __webpack_require__(956);
 
 var _Passenger2 = _interopRequireDefault(_Passenger);
 
-var _About = __webpack_require__(965);
+var _About = __webpack_require__(959);
 
 var _About2 = _interopRequireDefault(_About);
 
-var _main = __webpack_require__(959);
+var _main = __webpack_require__(962);
 
 var _main2 = _interopRequireDefault(_main);
 
@@ -62654,7 +62654,7 @@ module.exports = Array.isArray || function (arr) {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_warning__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_warning___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_warning__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_invariant__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__LocationUtils__ = __webpack_require__(84);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__PathUtils__ = __webpack_require__(66);
@@ -62958,7 +62958,7 @@ var createBrowserHistory = function createBrowserHistory() {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_warning__ = __webpack_require__(24);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_warning___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_warning__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant__ = __webpack_require__(38);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant__ = __webpack_require__(41);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_invariant___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_invariant__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__LocationUtils__ = __webpack_require__(84);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__PathUtils__ = __webpack_require__(66);
@@ -63573,9 +63573,9 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _semanticUiReact = __webpack_require__(57);
+var _semanticUiReact = __webpack_require__(48);
 
-var _reactRouterDom = __webpack_require__(47);
+var _reactRouterDom = __webpack_require__(40);
 
 var _styles = __webpack_require__(912);
 
@@ -63875,7 +63875,7 @@ module.exports = __webpack_require__(19).Object.assign;
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.3.1 Object.assign(target, source)
-var $export = __webpack_require__(39);
+var $export = __webpack_require__(42);
 
 $export($export.S + $export.F, 'Object', { assign: __webpack_require__(591) });
 
@@ -63937,7 +63937,7 @@ module.exports = !$assign || __webpack_require__(59)(function () {
 
 // false -> Array#indexOf
 // true  -> Array#includes
-var toIObject = __webpack_require__(51);
+var toIObject = __webpack_require__(52);
 var toLength = __webpack_require__(245);
 var toAbsoluteIndex = __webpack_require__(593);
 module.exports = function (IS_INCLUDES) {
@@ -63988,9 +63988,9 @@ module.exports = function defineProperty(it, key, desc) {
 /* 595 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var $export = __webpack_require__(39);
+var $export = __webpack_require__(42);
 // 19.1.2.4 / 15.2.3.6 Object.defineProperty(O, P, Attributes)
-$export($export.S + $export.F * !__webpack_require__(49), 'Object', { defineProperty: __webpack_require__(41).f });
+$export($export.S + $export.F * !__webpack_require__(50), 'Object', { defineProperty: __webpack_require__(44).f });
 
 
 /***/ }),
@@ -64055,11 +64055,11 @@ module.exports = function (Constructor, NAME, next) {
 /* 600 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var dP = __webpack_require__(41);
-var anObject = __webpack_require__(48);
+var dP = __webpack_require__(44);
+var anObject = __webpack_require__(49);
 var getKeys = __webpack_require__(85);
 
-module.exports = __webpack_require__(49) ? Object.defineProperties : function defineProperties(O, Properties) {
+module.exports = __webpack_require__(50) ? Object.defineProperties : function defineProperties(O, Properties) {
   anObject(O);
   var keys = getKeys(Properties);
   var length = keys.length;
@@ -64074,7 +64074,7 @@ module.exports = __webpack_require__(49) ? Object.defineProperties : function de
 /* 601 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var document = __webpack_require__(40).document;
+var document = __webpack_require__(43).document;
 module.exports = document && document.documentElement;
 
 
@@ -64087,7 +64087,7 @@ module.exports = document && document.documentElement;
 var addToUnscopables = __webpack_require__(603);
 var step = __webpack_require__(604);
 var Iterators = __webpack_require__(61);
-var toIObject = __webpack_require__(51);
+var toIObject = __webpack_require__(52);
 
 // 22.1.3.4 Array.prototype.entries()
 // 22.1.3.13 Array.prototype.keys()
@@ -64159,10 +64159,10 @@ module.exports = __webpack_require__(19).Symbol;
 "use strict";
 
 // ECMAScript 6 symbols shim
-var global = __webpack_require__(40);
-var has = __webpack_require__(50);
-var DESCRIPTORS = __webpack_require__(49);
-var $export = __webpack_require__(39);
+var global = __webpack_require__(43);
+var has = __webpack_require__(51);
+var DESCRIPTORS = __webpack_require__(50);
+var $export = __webpack_require__(42);
 var redefine = __webpack_require__(248);
 var META = __webpack_require__(608).KEY;
 var $fails = __webpack_require__(59);
@@ -64174,14 +64174,14 @@ var wksExt = __webpack_require__(157);
 var wksDefine = __webpack_require__(158);
 var enumKeys = __webpack_require__(609);
 var isArray = __webpack_require__(610);
-var anObject = __webpack_require__(48);
-var toIObject = __webpack_require__(51);
+var anObject = __webpack_require__(49);
+var toIObject = __webpack_require__(52);
 var toPrimitive = __webpack_require__(145);
 var createDesc = __webpack_require__(68);
 var _create = __webpack_require__(154);
 var gOPNExt = __webpack_require__(611);
 var $GOPD = __webpack_require__(159);
-var $DP = __webpack_require__(41);
+var $DP = __webpack_require__(44);
 var $keys = __webpack_require__(85);
 var gOPD = $GOPD.f;
 var dP = $DP.f;
@@ -64399,8 +64399,8 @@ setToStringTag(global.JSON, 'JSON', true);
 
 var META = __webpack_require__(86)('meta');
 var isObject = __webpack_require__(67);
-var has = __webpack_require__(50);
-var setDesc = __webpack_require__(41).f;
+var has = __webpack_require__(51);
+var setDesc = __webpack_require__(44).f;
 var id = 0;
 var isExtensible = Object.isExtensible || function () {
   return true;
@@ -64489,7 +64489,7 @@ module.exports = Array.isArray || function isArray(arg) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
-var toIObject = __webpack_require__(51);
+var toIObject = __webpack_require__(52);
 var gOPN = __webpack_require__(250).f;
 var toString = {}.toString;
 
@@ -64548,7 +64548,7 @@ module.exports = __webpack_require__(19).Object.setPrototypeOf;
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.3.19 Object.setPrototypeOf(O, proto)
-var $export = __webpack_require__(39);
+var $export = __webpack_require__(42);
 $export($export.S, 'Object', { setPrototypeOf: __webpack_require__(618).set });
 
 
@@ -64559,7 +64559,7 @@ $export($export.S, 'Object', { setPrototypeOf: __webpack_require__(618).set });
 // Works with __proto__ only. Old v8 can't work with null proto objects.
 /* eslint-disable no-proto */
 var isObject = __webpack_require__(67);
-var anObject = __webpack_require__(48);
+var anObject = __webpack_require__(49);
 var check = function (O, proto) {
   anObject(O);
   if (!isObject(proto) && proto !== null) throw TypeError(proto + ": can't set as prototype!");
@@ -64604,7 +64604,7 @@ module.exports = function create(P, D) {
 /* 621 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var $export = __webpack_require__(39);
+var $export = __webpack_require__(42);
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
 $export($export.S, 'Object', { create: __webpack_require__(154) });
 
@@ -64617,7 +64617,7 @@ var apply = __webpack_require__(90),
     castPath = __webpack_require__(69),
     last = __webpack_require__(256),
     parent = __webpack_require__(647),
-    toKey = __webpack_require__(55);
+    toKey = __webpack_require__(56);
 
 /**
  * The base implementation of `_.invoke` without support for individual
@@ -64841,7 +64841,7 @@ module.exports = hashClear;
 /* 629 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isFunction = __webpack_require__(54),
+var isFunction = __webpack_require__(55),
     isMasked = __webpack_require__(630),
     isObject = __webpack_require__(21),
     toSource = __webpack_require__(255);
@@ -65348,7 +65348,7 @@ module.exports = parent;
 
 var constant = __webpack_require__(649),
     defineProperty = __webpack_require__(258),
-    identity = __webpack_require__(43);
+    identity = __webpack_require__(46);
 
 /**
  * The base implementation of `setToString` without support for hot loop shorting.
@@ -65432,7 +65432,7 @@ module.exports = constant;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_lodash_keys___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10_lodash_keys__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_lodash_intersection__ = __webpack_require__(682);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_lodash_intersection___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11_lodash_intersection__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_lodash_has__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_lodash_has__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_lodash_has___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12_lodash_has__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_lodash_each__ = __webpack_require__(173);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_lodash_each___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13_lodash_each__);
@@ -65841,7 +65841,7 @@ module.exports = baseIsArguments;
 /* 657 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseEach = __webpack_require__(56);
+var baseEach = __webpack_require__(57);
 
 /**
  * The base implementation of `_.filter` without support for iteratee shorthands.
@@ -66613,7 +66613,7 @@ module.exports = equalObjects;
 /* 675 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(53),
+var getNative = __webpack_require__(54),
     root = __webpack_require__(20);
 
 /* Built-in method references that are verified to be native. */
@@ -66626,7 +66626,7 @@ module.exports = DataView;
 /* 676 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getNative = __webpack_require__(53),
+var getNative = __webpack_require__(54),
     root = __webpack_require__(20);
 
 /* Built-in method references that are verified to be native. */
@@ -66675,7 +66675,7 @@ var baseIsEqual = __webpack_require__(171),
     isKey = __webpack_require__(160),
     isStrictComparable = __webpack_require__(279),
     matchesStrictComparable = __webpack_require__(280),
-    toKey = __webpack_require__(55);
+    toKey = __webpack_require__(56);
 
 /** Used to compose bitmasks for value comparisons. */
 var COMPARE_PARTIAL_FLAG = 1,
@@ -66730,7 +66730,7 @@ module.exports = baseHasIn;
 var baseProperty = __webpack_require__(283),
     basePropertyDeep = __webpack_require__(681),
     isKey = __webpack_require__(160),
-    toKey = __webpack_require__(55);
+    toKey = __webpack_require__(56);
 
 /**
  * Creates a function that returns the value at `path` of a given object.
@@ -66789,7 +66789,7 @@ module.exports = basePropertyDeep;
 
 var arrayMap = __webpack_require__(32),
     baseIntersection = __webpack_require__(683),
-    baseRest = __webpack_require__(42),
+    baseRest = __webpack_require__(45),
     castArrayLikeObject = __webpack_require__(684);
 
 /**
@@ -66953,7 +66953,7 @@ module.exports = baseHas;
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return mergeChildMappings; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_slicedToArray__ = __webpack_require__(75);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_slicedToArray___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_babel_runtime_helpers_slicedToArray__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_has__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_has__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_has___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash_has__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_keys__ = __webpack_require__(22);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_keys___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash_keys__);
@@ -67094,7 +67094,7 @@ module.exports = __webpack_require__(692);
 /* 692 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var anObject = __webpack_require__(48);
+var anObject = __webpack_require__(49);
 var get = __webpack_require__(286);
 module.exports = __webpack_require__(19).getIterator = function (it) {
   var iterFn = get(it);
@@ -67206,7 +67206,7 @@ module.exports = arrayAggregator;
 /* 696 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseEach = __webpack_require__(56);
+var baseEach = __webpack_require__(57);
 
 /**
  * Aggregates elements of `collection` on `accumulator` with keys transformed
@@ -67313,7 +67313,7 @@ module.exports = createFind;
 /* 699 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseEach = __webpack_require__(56);
+var baseEach = __webpack_require__(57);
 
 /**
  * The base implementation of `_.some` without support for iteratee shorthands.
@@ -67905,7 +67905,7 @@ module.exports = __webpack_require__(19).Array.from;
 "use strict";
 
 var ctx = __webpack_require__(144);
-var $export = __webpack_require__(39);
+var $export = __webpack_require__(42);
 var toObject = __webpack_require__(88);
 var call = __webpack_require__(705);
 var isArrayIter = __webpack_require__(706);
@@ -67947,7 +67947,7 @@ $export($export.S + $export.F * !__webpack_require__(708)(function (iter) { Arra
 /***/ (function(module, exports, __webpack_require__) {
 
 // call something on iterator step with safe closing on error
-var anObject = __webpack_require__(48);
+var anObject = __webpack_require__(49);
 module.exports = function (iterator, fn, value, entries) {
   try {
     return entries ? fn(anObject(value)[0], value[1]) : fn(value);
@@ -67980,7 +67980,7 @@ module.exports = function (it) {
 
 "use strict";
 
-var $defineProperty = __webpack_require__(41);
+var $defineProperty = __webpack_require__(44);
 var createDesc = __webpack_require__(68);
 
 module.exports = function (object, index, value) {
@@ -68987,7 +68987,7 @@ module.exports = {
   'curry': __webpack_require__(305),
   'forEach': __webpack_require__(74),
   'isArray': __webpack_require__(13),
-  'isFunction': __webpack_require__(54),
+  'isFunction': __webpack_require__(55),
   'iteratee': __webpack_require__(744),
   'keys': __webpack_require__(109),
   'rearg': __webpack_require__(745),
@@ -70300,9 +70300,9 @@ module.exports = flatten;
 var arrayMap = __webpack_require__(32),
     copyArray = __webpack_require__(117),
     isArray = __webpack_require__(13),
-    isSymbol = __webpack_require__(52),
+    isSymbol = __webpack_require__(53),
     stringToPath = __webpack_require__(253),
-    toKey = __webpack_require__(55),
+    toKey = __webpack_require__(56),
     toString = __webpack_require__(31);
 
 /**
@@ -70587,7 +70587,7 @@ module.exports = func;
 /***/ (function(module, exports, __webpack_require__) {
 
 var convert = __webpack_require__(15),
-    func = convert('isFunction', __webpack_require__(54), __webpack_require__(35));
+    func = convert('isFunction', __webpack_require__(55), __webpack_require__(35));
 
 func.placeholder = __webpack_require__(14);
 module.exports = func;
@@ -70711,7 +70711,7 @@ module.exports = func;
 
 var baseFlatten = __webpack_require__(102),
     baseOrderBy = __webpack_require__(767),
-    baseRest = __webpack_require__(42),
+    baseRest = __webpack_require__(45),
     isIterateeCall = __webpack_require__(114);
 
 /**
@@ -70769,7 +70769,7 @@ var arrayMap = __webpack_require__(32),
     baseSortBy = __webpack_require__(768),
     baseUnary = __webpack_require__(100),
     compareMultiple = __webpack_require__(769),
-    identity = __webpack_require__(43);
+    identity = __webpack_require__(46);
 
 /**
  * The base implementation of `_.orderBy` without param guards.
@@ -70880,7 +70880,7 @@ module.exports = compareMultiple;
 /* 770 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isSymbol = __webpack_require__(52);
+var isSymbol = __webpack_require__(53);
 
 /**
  * Compares values to sort them in ascending order.
@@ -70981,7 +70981,7 @@ module.exports = func;
 
 var baseExtremum = __webpack_require__(775),
     baseLt = __webpack_require__(776),
-    identity = __webpack_require__(43);
+    identity = __webpack_require__(46);
 
 /**
  * Computes the minimum value of `array`. If `array` is empty or falsey,
@@ -71014,7 +71014,7 @@ module.exports = min;
 /* 775 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isSymbol = __webpack_require__(52);
+var isSymbol = __webpack_require__(53);
 
 /**
  * The base implementation of methods like `_.max` and `_.min` which accepts a
@@ -71379,7 +71379,7 @@ var instance = new EventStack();
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_lodash_isEmpty___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_lodash_isEmpty__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_lodash_some__ = __webpack_require__(174);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_lodash_some___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_lodash_some__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_lodash_has__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_lodash_has__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_lodash_has___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8_lodash_has__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_lodash_isArray__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_lodash_isArray___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9_lodash_isArray__);
@@ -71597,7 +71597,7 @@ var normalizeTarget = function normalizeTarget(target) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_typeof___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_babel_runtime_helpers_typeof__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_uniq__ = __webpack_require__(316);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_uniq___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash_uniq__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_isFunction__ = __webpack_require__(54);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_isFunction__ = __webpack_require__(55);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash_isFunction___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_lodash_isFunction__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_isArray__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_isArray___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_lodash_isArray__);
@@ -71972,7 +71972,7 @@ module.exports = func;
 /***/ (function(module, exports, __webpack_require__) {
 
 var convert = __webpack_require__(15),
-    func = convert('has', __webpack_require__(44));
+    func = convert('has', __webpack_require__(47));
 
 func.placeholder = __webpack_require__(14);
 module.exports = func;
@@ -72526,7 +72526,7 @@ keyboardKey.RightSquareBracket = keyboardKey[']'];
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_isEqual__ = __webpack_require__(321);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash_isEqual___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash_isEqual__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_has__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_has__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash_has___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash_has__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_transform__ = __webpack_require__(804);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash_transform___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash_transform__);
@@ -72571,7 +72571,7 @@ var arrayEach = __webpack_require__(74),
     getPrototype = __webpack_require__(120),
     isArray = __webpack_require__(13),
     isBuffer = __webpack_require__(71),
-    isFunction = __webpack_require__(54),
+    isFunction = __webpack_require__(55),
     isObject = __webpack_require__(21),
     isTypedArray = __webpack_require__(108);
 
@@ -72738,7 +72738,7 @@ module.exports = shallowEqual;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_babel_runtime_helpers_possibleConstructorReturn___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_babel_runtime_helpers_possibleConstructorReturn__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_babel_runtime_helpers_inherits__ = __webpack_require__(10);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_babel_runtime_helpers_inherits___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_babel_runtime_helpers_inherits__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_lodash_has__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_lodash_has__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_lodash_has___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_lodash_has__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_lodash_invoke__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_lodash_invoke___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_lodash_invoke__);
@@ -74498,7 +74498,7 @@ Select.Menu = __WEBPACK_IMPORTED_MODULE_3__modules_Dropdown__["a" /* default */]
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_16_lodash_deburr___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_16_lodash_deburr__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_17_lodash_filter__ = __webpack_require__(168);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_17_lodash_filter___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_17_lodash_filter__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18_lodash_isFunction__ = __webpack_require__(54);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18_lodash_isFunction__ = __webpack_require__(55);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_18_lodash_isFunction___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_18_lodash_isFunction__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_19_lodash_dropRight__ = __webpack_require__(831);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_19_lodash_dropRight___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_19_lodash_dropRight__);
@@ -74518,7 +74518,7 @@ Select.Menu = __WEBPACK_IMPORTED_MODULE_3__modules_Dropdown__["a" /* default */]
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_26_lodash_invoke___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_26_lodash_invoke__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_27_lodash_isEqual__ = __webpack_require__(321);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_27_lodash_isEqual___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_27_lodash_isEqual__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_28_lodash_has__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_28_lodash_has__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_28_lodash_has___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_28_lodash_has__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_29_lodash_isNil__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_29_lodash_isNil___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_29_lodash_isNil__);
@@ -75849,7 +75849,7 @@ module.exports = function getOwnPropertyDescriptor(it, key) {
 /***/ (function(module, exports, __webpack_require__) {
 
 // 19.1.2.6 Object.getOwnPropertyDescriptor(O, P)
-var toIObject = __webpack_require__(51);
+var toIObject = __webpack_require__(52);
 var $getOwnPropertyDescriptor = __webpack_require__(159).f;
 
 __webpack_require__(341)('getOwnPropertyDescriptor', function () {
@@ -75954,7 +75954,7 @@ module.exports = arrayEvery;
 /* 827 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseEach = __webpack_require__(56);
+var baseEach = __webpack_require__(57);
 
 /**
  * The base implementation of `_.every` without support for iteratee shorthands.
@@ -76306,7 +76306,7 @@ module.exports = unicodeSize;
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseFlatten = __webpack_require__(102),
-    baseRest = __webpack_require__(42),
+    baseRest = __webpack_require__(45),
     baseUniq = __webpack_require__(317),
     isArrayLikeObject = __webpack_require__(104);
 
@@ -80508,7 +80508,7 @@ module.exports = assign;
 /* 885 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseRest = __webpack_require__(42),
+var baseRest = __webpack_require__(45),
     isIterateeCall = __webpack_require__(114);
 
 /**
@@ -81813,7 +81813,7 @@ Search.propTypes = process.env.NODE_ENV !== "production" ? {
 /* 895 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseRest = __webpack_require__(42),
+var baseRest = __webpack_require__(45),
     createWrap = __webpack_require__(115),
     getHolder = __webpack_require__(180),
     replaceHolders = __webpack_require__(118);
@@ -83083,7 +83083,7 @@ var transform;
 var options = {"hmr":true}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(46)(content, options);
+var update = __webpack_require__(39)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -83103,7 +83103,7 @@ if(false) {
 /* 913 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(45)(undefined);
+exports = module.exports = __webpack_require__(38)(undefined);
 // imports
 
 
@@ -83225,9 +83225,9 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _semanticUiReact = __webpack_require__(57);
+var _semanticUiReact = __webpack_require__(48);
 
-var _reactRouterDom = __webpack_require__(47);
+var _reactRouterDom = __webpack_require__(40);
 
 var _axios = __webpack_require__(132);
 
@@ -84342,7 +84342,7 @@ var transform;
 var options = {"hmr":true}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(46)(content, options);
+var update = __webpack_require__(39)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -84362,7 +84362,7 @@ if(false) {
 /* 935 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(45)(undefined);
+exports = module.exports = __webpack_require__(38)(undefined);
 // imports
 
 
@@ -84389,9 +84389,9 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _semanticUiReact = __webpack_require__(57);
+var _semanticUiReact = __webpack_require__(48);
 
-var _reactRouterDom = __webpack_require__(47);
+var _reactRouterDom = __webpack_require__(40);
 
 var _reactRouter = __webpack_require__(937);
 
@@ -84596,7 +84596,7 @@ var transform;
 var options = {"hmr":true}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(46)(content, options);
+var update = __webpack_require__(39)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -84616,7 +84616,7 @@ if(false) {
 /* 939 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(45)(undefined);
+exports = module.exports = __webpack_require__(38)(undefined);
 // imports
 
 
@@ -84643,9 +84643,9 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _semanticUiReact = __webpack_require__(57);
+var _semanticUiReact = __webpack_require__(48);
 
-var _reactRouterDom = __webpack_require__(47);
+var _reactRouterDom = __webpack_require__(40);
 
 var _axios = __webpack_require__(132);
 
@@ -84912,7 +84912,7 @@ var Dashboard = function (_Component) {
         } else {
           return _react2.default.createElement(
             'div',
-            { className: 'request' },
+            null,
             _react2.default.createElement(
               'div',
               { id: 'navbar2' },
@@ -84953,106 +84953,96 @@ var Dashboard = function (_Component) {
                 )
               )
             ),
+            _react2.default.createElement('br', null),
+            _react2.default.createElement('br', null),
             _react2.default.createElement(
               'div',
-              null,
+              { className: 'Trips' },
               this.state.driverData.map(function (i, index) {
                 return _react2.default.createElement(
                   'div',
                   { key: index },
                   _react2.default.createElement(
-                    'h2',
-                    null,
-                    'Trip From ',
-                    i.departure,
-                    ' to ',
-                    i.destination
-                  ),
-                  _react2.default.createElement(
-                    'div',
-                    null,
+                    _semanticUiReact.Table,
+                    { singleLine: true },
                     _react2.default.createElement(
-                      _semanticUiReact.Table,
-                      { singleLine: true },
+                      _semanticUiReact.Table.Header,
+                      null,
                       _react2.default.createElement(
-                        _semanticUiReact.Table.Header,
+                        _semanticUiReact.Table.Row,
                         null,
+                        _react2.default.createElement(_semanticUiReact.Table.HeaderCell, null),
                         _react2.default.createElement(
-                          _semanticUiReact.Table.Row,
+                          _semanticUiReact.Table.HeaderCell,
                           null,
-                          _react2.default.createElement(_semanticUiReact.Table.HeaderCell, null),
+                          'Passenger Email'
+                        ),
+                        _react2.default.createElement(
+                          _semanticUiReact.Table.HeaderCell,
+                          null,
+                          'Passenger Gender'
+                        ),
+                        _react2.default.createElement(
+                          _semanticUiReact.Table.HeaderCell,
+                          null,
+                          'Seats Asked'
+                        ),
+                        _react2.default.createElement(_semanticUiReact.Table.HeaderCell, null),
+                        _react2.default.createElement(_semanticUiReact.Table.HeaderCell, null)
+                      )
+                    ),
+                    _react2.default.createElement(
+                      _semanticUiReact.Table.Body,
+                      null,
+                      i.passengerEmail.map(function (j, index) {
+                        return _react2.default.createElement(
+                          _semanticUiReact.Table.Row,
+                          { key: index },
                           _react2.default.createElement(
-                            _semanticUiReact.Table.HeaderCell,
+                            _semanticUiReact.Table.Cell,
                             null,
-                            'Passenger Email'
+                            _react2.default.createElement(_semanticUiReact.Icon, { name: 'users' })
                           ),
                           _react2.default.createElement(
-                            _semanticUiReact.Table.HeaderCell,
+                            _semanticUiReact.Table.Cell,
                             null,
-                            'Passenger Gender'
+                            j,
+                            '@illinois.edu'
                           ),
                           _react2.default.createElement(
-                            _semanticUiReact.Table.HeaderCell,
+                            _semanticUiReact.Table.Cell,
                             null,
-                            'Seats Asked'
+                            i.passengerGender[index]
                           ),
-                          _react2.default.createElement(_semanticUiReact.Table.HeaderCell, null),
-                          _react2.default.createElement(_semanticUiReact.Table.HeaderCell, null)
-                        )
-                      ),
-                      _react2.default.createElement(
-                        _semanticUiReact.Table.Body,
-                        null,
-                        i.passengerEmail.map(function (j, index) {
-                          return _react2.default.createElement(
-                            _semanticUiReact.Table.Row,
-                            { key: index },
+                          _react2.default.createElement(
+                            _semanticUiReact.Table.Cell,
+                            null,
+                            i.passengerSeats[index]
+                          ),
+                          _react2.default.createElement(
+                            _semanticUiReact.Table.Cell,
+                            null,
                             _react2.default.createElement(
-                              _semanticUiReact.Table.Cell,
-                              null,
-                              _react2.default.createElement(_semanticUiReact.Icon, { name: 'users' })
-                            ),
-                            _react2.default.createElement(
-                              _semanticUiReact.Table.Cell,
-                              null,
-                              j,
-                              '@illinois.edu'
-                            ),
-                            _react2.default.createElement(
-                              _semanticUiReact.Table.Cell,
-                              null,
-                              i.passengerGender[index]
-                            ),
-                            _react2.default.createElement(
-                              _semanticUiReact.Table.Cell,
-                              null,
-                              i.passengerSeats[index]
-                            ),
-                            _react2.default.createElement(
-                              _semanticUiReact.Table.Cell,
-                              null,
-                              _react2.default.createElement(
-                                'form',
-                                { onClick: _this4.acceptChange },
-                                _react2.default.createElement(
-                                  _semanticUiReact.Button,
-                                  { value: i.passengerPhoneNumber[index], disabled: _this4.state.accept || _this4.state.decline },
-                                  'Accept'
-                                )
-                              )
-                            ),
-                            _react2.default.createElement(
-                              _semanticUiReact.Table.Cell,
-                              null,
+                              'form',
+                              { onClick: _this4.acceptChange },
                               _react2.default.createElement(
                                 _semanticUiReact.Button,
-                                { value: index, x: i, onClick: _this4.declineChange, disabled: _this4.state.accept || _this4.state.decline },
-                                'Decline'
+                                { value: i.passengerPhoneNumber[index], disabled: _this4.state.accept || _this4.state.decline },
+                                'Accept'
                               )
                             )
-                          );
-                        })
-                      )
+                          ),
+                          _react2.default.createElement(
+                            _semanticUiReact.Table.Cell,
+                            null,
+                            _react2.default.createElement(
+                              _semanticUiReact.Button,
+                              { value: index, x: i, onClick: _this4.declineChange, disabled: _this4.state.accept || _this4.state.decline },
+                              'Decline'
+                            )
+                          )
+                        );
+                      })
                     )
                   )
                 );
@@ -85103,7 +85093,7 @@ var transform;
 var options = {"hmr":true}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(46)(content, options);
+var update = __webpack_require__(39)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -85123,12 +85113,12 @@ if(false) {
 /* 942 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(45)(undefined);
+exports = module.exports = __webpack_require__(38)(undefined);
 // imports
 
 
 // module
-exports.push([module.i, "#navbar .buttons {\n  width: 100%;\n  padding-top: 10px;\n  padding-bottom: 10px;\n  float: right;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: end;\n      -ms-flex-pack: end;\n          justify-content: flex-end; }\n\n/* Page content */\n#welcome {\n  background-color: brown; }\n\n.select {\n  width: 90%;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  margin: auto; }\n\n#Driver {\n  position: relative;\n  display: block;\n  opacity: 0.9;\n  filter: alpha(opacity=90);\n  width: 45%;\n  float: right; }\n\n.content1 {\n  position: absolute;\n  width: 35%;\n  top: 50%;\n  -webkit-transform: translateY(-50%);\n          transform: translateY(-50%);\n  right: 0px;\n  color: white;\n  padding-right: 15px; }\n\n.content {\n  position: absolute;\n  color: white;\n  width: 35%;\n  top: 50%;\n  -webkit-transform: translateY(-50%);\n          transform: translateY(-50%);\n  padding-left: 15px; }\n\n#Passenger {\n  position: relative;\n  display: block;\n  opacity: 0.9;\n  filter: alpha(opacity=90);\n  width: 45%;\n  float: left; }\n\n#Driver:hover {\n  opacity: 1.0;\n  filter: alpha(opacity=50);\n  /* For IE8 and earlier */\n  width: 80%; }\n\n#Passenger:hover {\n  opacity: 1.0;\n  filter: alpha(opacity=50);\n  /* For IE8 and earlier */\n  width: 80%; }\n\n.request #navbar2 h1 {\n  width: 40%;\n  float: left; }\n\n.request #navbar2 .buttons {\n  width: 60%;\n  padding-top: 10px;\n  padding-bottom: 10px;\n  float: right;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: end;\n      -ms-flex-pack: end;\n          justify-content: flex-end; }\n", ""]);
+exports.push([module.i, "#navbar .buttons {\n  width: 100%;\n  padding-top: 10px;\n  padding-bottom: 10px;\n  float: right;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: end;\n      -ms-flex-pack: end;\n          justify-content: flex-end; }\n\n/* Page content */\n#welcome {\n  background-color: brown; }\n\n.select {\n  width: 90%;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: center;\n      -ms-flex-pack: center;\n          justify-content: center;\n  margin: auto; }\n\n#Driver {\n  position: relative;\n  display: block;\n  opacity: 0.9;\n  filter: alpha(opacity=90);\n  width: 45%;\n  float: right; }\n\n.content1 {\n  position: absolute;\n  width: 35%;\n  top: 50%;\n  -webkit-transform: translateY(-50%);\n          transform: translateY(-50%);\n  right: 0px;\n  color: white;\n  padding-right: 15px; }\n\n.content {\n  position: absolute;\n  color: white;\n  width: 35%;\n  top: 50%;\n  -webkit-transform: translateY(-50%);\n          transform: translateY(-50%);\n  padding-left: 15px; }\n\n#Passenger {\n  position: relative;\n  display: block;\n  opacity: 0.9;\n  filter: alpha(opacity=90);\n  width: 45%;\n  float: left; }\n\n#Driver:hover {\n  opacity: 1.0;\n  filter: alpha(opacity=50);\n  /* For IE8 and earlier */ }\n\n#Passenger:hover {\n  opacity: 1.0;\n  filter: alpha(opacity=50);\n  /* For IE8 and earlier */ }\n\n#navbar2 h1 {\n  width: 40%;\n  float: left; }\n\n#navbar2 .buttons {\n  width: 60%;\n  padding-top: 10px;\n  padding-bottom: 10px;\n  float: right;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: end;\n      -ms-flex-pack: end;\n          justify-content: flex-end; }\n", ""]);
 
 // exports
 
@@ -85150,9 +85140,9 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _semanticUiReact = __webpack_require__(57);
+var _semanticUiReact = __webpack_require__(48);
 
-var _reactRouterDom = __webpack_require__(47);
+var _reactRouterDom = __webpack_require__(40);
 
 var _axios = __webpack_require__(132);
 
@@ -85168,7 +85158,7 @@ var _moment = __webpack_require__(6);
 
 var _moment2 = _interopRequireDefault(_moment);
 
-var _Driver = __webpack_require__(961);
+var _Driver = __webpack_require__(954);
 
 var _Driver2 = _interopRequireDefault(_Driver);
 
@@ -85283,23 +85273,29 @@ var Driver = function (_Component) {
     }
   }, {
     key: 'departureChange',
-    value: function departureChange(e) {
+    value: function departureChange(e, _ref) {
+      var value = _ref.value;
+
       this.setState({
-        departureValue: e.target.value
+        departureValue: value
       });
     }
   }, {
     key: 'destinationChange',
-    value: function destinationChange(e) {
+    value: function destinationChange(e, _ref2) {
+      var value = _ref2.value;
+
       this.setState({
-        destinationValue: e.target.value
+        destinationValue: value
       });
     }
   }, {
     key: 'hasSeatsChange',
-    value: function hasSeatsChange(e) {
+    value: function hasSeatsChange(e, _ref3) {
+      var value = _ref3.value;
+
       this.setState({
-        hasSeats: e.target.value
+        hasSeats: value
       });
     }
   }, {
@@ -85311,214 +85307,107 @@ var Driver = function (_Component) {
     }
   }, {
     key: 'hasTimeChange',
-    value: function hasTimeChange(e) {
+    value: function hasTimeChange(e, _ref4) {
+      var value = _ref4.value;
+
       this.setState({
-        time: e.target.value
+        time: value
       });
     }
   }, {
     key: 'render',
     value: function render() {
+      console.log(this.state.departureValue);
+      var options = [{ key: 'Chicago', text: 'Chicago', value: "Chicago" }, { key: 'UIUC', text: 'UIUC', value: "UIUC" }, { key: "O'hare", text: "O'hare", value: "O'hare" }, { key: 'Michigan', text: 'Michigan', value: "Michigan" }];
+      var options2 = [{ keys: 'morning', text: 'Morning', value: 'morning' }, { keys: 'noon', text: 'Noon', value: 'noon' }, { keys: 'afternoon', text: 'Afternoon', value: 'afternoon' }];
+      var options3 = [{ keys: '1', text: "1+", value: '1' }, { keys: '3', text: "3+", value: '3' }, { keys: '6', text: "6+", value: '6' }];
       if (this.state.isLoggedIn) {
         return _react2.default.createElement(
           'div',
-          null,
+          { className: 'Driver' },
           _react2.default.createElement(
-            _reactRouterDom.Link,
-            { to: '/dashboard' },
+            'div',
+            { className: 'nav' },
             _react2.default.createElement(
-              _semanticUiReact.Button,
+              'h1',
               null,
-              'Back'
-            )
-          ),
-          _react2.default.createElement(
-            _reactRouterDom.Link,
-            { to: '/' },
+              'Hi ',
+              this.state.driverName,
+              ', this is Driver page'
+            ),
             _react2.default.createElement(
-              _semanticUiReact.Button,
-              null,
-              'Logout'
+              'div',
+              { className: 'buttons' },
+              _react2.default.createElement(
+                _reactRouterDom.Link,
+                { to: '/dashboard' },
+                _react2.default.createElement(
+                  _semanticUiReact.Button,
+                  null,
+                  'Back'
+                )
+              ),
+              _react2.default.createElement(
+                _reactRouterDom.Link,
+                { to: '/' },
+                _react2.default.createElement(
+                  _semanticUiReact.Button,
+                  null,
+                  'Logout'
+                )
+              )
             )
-          ),
-          _react2.default.createElement(
-            'h1',
-            null,
-            'Hi ',
-            this.state.driverName,
-            ', this is Driver page'
           ),
           _react2.default.createElement(
             'form',
-            { onSubmit: this.onSubmit },
+            { onSubmit: this.onSubmit, className: 'Driver_filter' },
+            _react2.default.createElement(
+              'h1',
+              null,
+              'Welcome ',
+              this.state.driverName
+            ),
+            _react2.default.createElement(
+              'h3',
+              null,
+              'Post the ride details you\'d like to offer.'
+            ),
+            _react2.default.createElement(
+              _semanticUiReact.Form,
+              null,
+              _react2.default.createElement(
+                _semanticUiReact.Form.Group,
+                { widths: 'equal' },
+                _react2.default.createElement(_semanticUiReact.Form.Select, { label: 'Departure', value: this.state.departureValue, onChange: this.departureChange, options: options, placeholder: 'Departure' }),
+                _react2.default.createElement(_semanticUiReact.Form.Select, { label: 'Destination', value: this.state.destinationValue, onChange: this.destinationChange, options: options, placeholder: 'Destination' })
+              ),
+              _react2.default.createElement(
+                _semanticUiReact.Form.Group,
+                { widths: 'equal' },
+                _react2.default.createElement(_semanticUiReact.Form.Select, { label: 'Time Period', value: this.state.time, onChange: this.hasTimeChange, options: options2, placeholder: 'Time Period' }),
+                _react2.default.createElement(_semanticUiReact.Form.Select, { label: 'Seats Available', value: this.state.hasSeats, onChange: this.hasSeatsChange, options: options3, placeholder: 'Seats Available' })
+              )
+            ),
+            _react2.default.createElement(
+              'p',
+              null,
+              'Select your Date:'
+            ),
             _react2.default.createElement(
               'div',
-              { className: 'Driver_filter' },
+              { className: 'calendar' },
+              _react2.default.createElement(_reactDatepicker2.default, { classname: 'calendar',
+                selected: this.state.startDate,
+                onChange: this.handleChange
+              })
+            ),
+            _react2.default.createElement(
+              'div',
+              { className: 'button' },
               _react2.default.createElement(
-                'div',
-                { className: 'search' },
-                _react2.default.createElement(
-                  'div',
-                  { className: 'bg' },
-                  _react2.default.createElement(
-                    'h1',
-                    null,
-                    'Welcome ',
-                    this.state.driverName
-                  ),
-                  _react2.default.createElement(
-                    'h3',
-                    null,
-                    'Post the ride details you\'d like to offer.'
-                  ),
-                  _react2.default.createElement(
-                    'p',
-                    null,
-                    'Departure:'
-                  ),
-                  _react2.default.createElement(
-                    'div',
-                    { 'class': 'field' },
-                    _react2.default.createElement(
-                      'select',
-                      { value: this.state.departureValue, onChange: this.departureChange },
-                      _react2.default.createElement(
-                        'option',
-                        { value: '' },
-                        'Select You departure'
-                      ),
-                      _react2.default.createElement(
-                        'option',
-                        { value: 'Chicago' },
-                        'Chicago'
-                      ),
-                      _react2.default.createElement(
-                        'option',
-                        { value: 'O\'hare' },
-                        'O\'hare'
-                      ),
-                      _react2.default.createElement(
-                        'option',
-                        { value: 'UIUC' },
-                        'UIUC'
-                      )
-                    ),
-                    _react2.default.createElement(
-                      'p',
-                      null,
-                      'Destination:'
-                    ),
-                    _react2.default.createElement(
-                      'select',
-                      { value: this.state.destinationValue, onChange: this.destinationChange },
-                      _react2.default.createElement(
-                        'option',
-                        { value: '' },
-                        'Select Your Destination'
-                      ),
-                      _react2.default.createElement(
-                        'option',
-                        { value: 'Chicago' },
-                        'Chicago'
-                      ),
-                      _react2.default.createElement(
-                        'option',
-                        { value: 'O\'hare' },
-                        'O\'hare'
-                      ),
-                      _react2.default.createElement(
-                        'option',
-                        { value: 'UIUC' },
-                        'UIUC'
-                      )
-                    ),
-                    _react2.default.createElement(
-                      'p',
-                      null,
-                      'Seats Available:'
-                    ),
-                    _react2.default.createElement(
-                      'select',
-                      { value: this.state.hasSeats, onChange: this.hasSeatsChange },
-                      _react2.default.createElement(
-                        'option',
-                        { value: '' },
-                        'Select the Seats Available'
-                      ),
-                      _react2.default.createElement(
-                        'option',
-                        { value: '1' },
-                        '1+'
-                      ),
-                      _react2.default.createElement(
-                        'option',
-                        { value: '4' },
-                        '4+'
-                      ),
-                      _react2.default.createElement(
-                        'option',
-                        { value: '100' },
-                        '100+'
-                      )
-                    ),
-                    _react2.default.createElement(
-                      'p',
-                      null,
-                      'Select your Date:'
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'calendar' },
-                      _react2.default.createElement(_reactDatepicker2.default, { classname: 'calendar',
-                        selected: this.state.startDate,
-                        onChange: this.handleChange
-                      })
-                    ),
-                    _react2.default.createElement(
-                      'p',
-                      null,
-                      'Seats Available:'
-                    ),
-                    _react2.default.createElement(
-                      'select',
-                      { value: this.state.time, onChange: this.hasTimeChange },
-                      _react2.default.createElement(
-                        'option',
-                        { value: '' },
-                        'Select the time period'
-                      ),
-                      _react2.default.createElement(
-                        'option',
-                        { value: 'morning' },
-                        'Morning'
-                      ),
-                      _react2.default.createElement(
-                        'option',
-                        { value: 'noon' },
-                        'Noon'
-                      ),
-                      _react2.default.createElement(
-                        'option',
-                        { value: 'afternoon' },
-                        'Afternoon'
-                      ),
-                      _react2.default.createElement(
-                        'option',
-                        { value: 'evening' },
-                        'Evening'
-                      )
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { className: 'button' },
-                      _react2.default.createElement(
-                        _semanticUiReact.Button,
-                        { type: 'submit' },
-                        'Post'
-                      )
-                    )
-                  )
-                )
+                _semanticUiReact.Button,
+                { type: 'submit' },
+                'Post'
               )
             )
           )
@@ -89209,7 +89098,7 @@ exports.default = Arrow;
 /* 953 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(45)(undefined);
+exports = module.exports = __webpack_require__(38)(undefined);
 // imports
 
 
@@ -89220,8 +89109,51 @@ exports.push([module.i, ".react-datepicker-popper[data-placement^=\"bottom\"] .r
 
 
 /***/ }),
-/* 954 */,
-/* 955 */,
+/* 954 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(955);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// Prepare cssTransformation
+var transform;
+
+var options = {"hmr":true}
+options.transform = transform
+// add the styles to the DOM
+var update = __webpack_require__(39)(content, options);
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../../node_modules/css-loader/index.js?-url!../../../../node_modules/postcss-loader/lib/index.js!../../../../node_modules/sass-loader/lib/loader.js!./Driver.scss", function() {
+			var newContent = require("!!../../../../node_modules/css-loader/index.js?-url!../../../../node_modules/postcss-loader/lib/index.js!../../../../node_modules/sass-loader/lib/loader.js!./Driver.scss");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 955 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(38)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, ".Driver_filter {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  -webkit-transform: translate(-50%, -50%);\n          transform: translate(-50%, -50%); }\n\n/*body{\nbackground-image: url(\"https://i2.wp.com/haptik.ai/blog/wp-content/uploads/2017/04/Sharecab_EarthDay.png\");\nbackgroud-repeat:no-repeat;\nbackground-size: cover;\n\n}*/\n.Driver {\n  width: 100%; }\n  .Driver .nav h1 {\n    width: 40%;\n    float: left;\n    font-size: 150%; }\n  .Driver .nav .buttons {\n    width: 50%;\n    float: right;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-pack: end;\n        -ms-flex-pack: end;\n            justify-content: flex-end; }\n", ""]);
+
+// exports
+
+
+/***/ }),
 /* 956 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -89238,9 +89170,9 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _semanticUiReact = __webpack_require__(57);
+var _semanticUiReact = __webpack_require__(48);
 
-var _reactRouterDom = __webpack_require__(47);
+var _reactRouterDom = __webpack_require__(40);
 
 var _axios = __webpack_require__(132);
 
@@ -89260,7 +89192,7 @@ var _moment = __webpack_require__(6);
 
 var _moment2 = _interopRequireDefault(_moment);
 
-var _Passenger = __webpack_require__(963);
+var _Passenger = __webpack_require__(957);
 
 var _Passenger2 = _interopRequireDefault(_Passenger);
 
@@ -89387,30 +89319,38 @@ var Passenger = function (_Component) {
     }
   }, {
     key: 'departureChange',
-    value: function departureChange(e) {
+    value: function departureChange(e, _ref) {
+      var value = _ref.value;
+
       this.setState({
-        departureValue: e.target.value
+        departureValue: value
       });
     }
   }, {
     key: 'destinationChange',
-    value: function destinationChange(e) {
+    value: function destinationChange(e, _ref2) {
+      var value = _ref2.value;
+
       this.setState({
-        destinationValue: e.target.value
+        destinationValue: value
       });
     }
   }, {
     key: 'seatsChange',
-    value: function seatsChange(e) {
+    value: function seatsChange(e, _ref3) {
+      var value = _ref3.value;
+
       this.setState({
-        numberSeats: e.target.value
+        numberSeats: value
       });
     }
   }, {
     key: 'hasTimeChange',
-    value: function hasTimeChange(e) {
+    value: function hasTimeChange(e, _ref4) {
+      var value = _ref4.value;
+
       this.setState({
-        time: e.target.value
+        time: value
       });
     }
   }, {
@@ -89418,6 +89358,15 @@ var Passenger = function (_Component) {
     value: function render() {
       var _this4 = this;
 
+      var options = [{ key: 'Chicago', text: 'Chicago', value: "Chicago" }, { key: 'UIUC', text: 'UIUC', value: "UIUC" }, { key: "O'hare", text: "O'hare", value: "O'hare" }, { key: 'Michigan', text: 'Michigan', value: "Michigan" }];
+      var options2 = [{ keys: 'morning', text: 'Morning', value: 'morning' }, { keys: 'noon', text: 'Noon', value: 'noon' }, { keys: 'afternoon', text: 'Afternoon', value: 'afternoon' }, { keys: 'evening', text: 'Evening', value: 'evening' }];
+      var options3 = [{ keys: '1', text: "1+", value: '1' }, { keys: '3', text: "3+", value: '3' }, { keys: '6', text: "6+", value: '6' }];
+      console.log(this.state.departureValue);
+      console.log(this.state.destinationValue);
+      console.log(this.state.time);
+
+      console.log(this.state.numberSeats);
+      console.log(this.state.startDate);
       //console.log(moment(this.state.startDate).format('DD-MM-YYYY'));
       if (this.state.passengerClicked) {
         url = "http://localhost:3000/api/rideInfo/" + this.state.theDriver._id;
@@ -89465,196 +89414,90 @@ var Passenger = function (_Component) {
         if (!this.state.isClicked) {
           return _react2.default.createElement(
             'div',
-            null,
+            { className: 'Passenger' },
             _react2.default.createElement(
-              _reactRouterDom.Link,
-              { to: '/dashboard' },
+              'div',
+              { className: 'nav' },
               _react2.default.createElement(
-                _semanticUiReact.Button,
+                'h1',
                 null,
-                'Back'
-              )
-            ),
-            _react2.default.createElement(
-              _reactRouterDom.Link,
-              { to: '/' },
+                'Hi ',
+                this.state.passengerName,
+                ', this is Passenger page'
+              ),
               _react2.default.createElement(
-                _semanticUiReact.Button,
-                null,
-                'Logout'
+                'div',
+                { className: 'buttons' },
+                _react2.default.createElement(
+                  _reactRouterDom.Link,
+                  { to: '/dashboard' },
+                  _react2.default.createElement(
+                    _semanticUiReact.Button,
+                    null,
+                    'Back'
+                  )
+                ),
+                _react2.default.createElement(
+                  _reactRouterDom.Link,
+                  { to: '/' },
+                  _react2.default.createElement(
+                    _semanticUiReact.Button,
+                    null,
+                    'Logout'
+                  )
+                )
               )
             ),
             _react2.default.createElement(
               'form',
-              { onSubmit: this.onSubmit },
+              { className: 'Passenger_filter', onSubmit: this.onSubmit },
+              _react2.default.createElement(
+                'h1',
+                null,
+                'Welcome ',
+                this.state.driverName
+              ),
+              _react2.default.createElement(
+                'h3',
+                null,
+                'Pick the ride details you\'d like to take.'
+              ),
+              _react2.default.createElement(
+                _semanticUiReact.Form,
+                null,
+                _react2.default.createElement(
+                  _semanticUiReact.Form.Group,
+                  { widths: 'equal' },
+                  _react2.default.createElement(_semanticUiReact.Form.Select, { label: 'Departure', value: this.state.departureValue, onChange: this.departureChange, options: options, placeholder: 'Departure' }),
+                  _react2.default.createElement(_semanticUiReact.Form.Select, { label: 'Destination', value: this.state.destinationValue, onChange: this.destinationChange, options: options, placeholder: 'Destination' })
+                ),
+                _react2.default.createElement(
+                  _semanticUiReact.Form.Group,
+                  { widths: 'equal' },
+                  _react2.default.createElement(_semanticUiReact.Form.Select, { label: 'Time Period', value: this.state.time, onChange: this.hasTimeChange, options: options2, placeholder: 'Time Period' }),
+                  _react2.default.createElement(_semanticUiReact.Form.Select, { label: 'Seats Available', value: this.state.numberSeats, onChange: this.seatsChange, options: options3, placeholder: 'Seats Available' })
+                )
+              ),
+              _react2.default.createElement(
+                'p',
+                null,
+                'Select your Date:'
+              ),
               _react2.default.createElement(
                 'div',
-                { className: 'Passenger_filter' },
+                { className: 'calendar' },
+                _react2.default.createElement(_reactDatepicker2.default, {
+                  selected: this.state.startDate,
+                  onChange: this.handleChange
+                })
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'button' },
                 _react2.default.createElement(
-                  'div',
-                  { className: 'search' },
-                  _react2.default.createElement(
-                    'div',
-                    { className: 'bg' },
-                    _react2.default.createElement(
-                      'h1',
-                      null,
-                      'Welcome ',
-                      this.state.driverName
-                    ),
-                    _react2.default.createElement(
-                      'h3',
-                      null,
-                      'Search for any ride details we offer.'
-                    ),
-                    _react2.default.createElement(
-                      'p',
-                      null,
-                      'Departure:'
-                    ),
-                    _react2.default.createElement(
-                      'div',
-                      { 'class': 'field' },
-                      _react2.default.createElement(
-                        'select',
-                        { value: this.state.departureValue, onChange: this.departureChange },
-                        _react2.default.createElement(
-                          'option',
-                          { value: '' },
-                          'Select You departure'
-                        ),
-                        _react2.default.createElement(
-                          'option',
-                          { value: 'Chicago' },
-                          'Chicago'
-                        ),
-                        _react2.default.createElement(
-                          'option',
-                          { value: 'O\'hare' },
-                          'O\'hare'
-                        ),
-                        _react2.default.createElement(
-                          'option',
-                          { value: 'UIUC' },
-                          'UIUC'
-                        )
-                      ),
-                      _react2.default.createElement(
-                        'p',
-                        null,
-                        'Destination:'
-                      ),
-                      _react2.default.createElement(
-                        'select',
-                        { value: this.state.destinationValue, onChange: this.destinationChange },
-                        _react2.default.createElement(
-                          'option',
-                          { value: '' },
-                          'Select Your Destination'
-                        ),
-                        _react2.default.createElement(
-                          'option',
-                          { value: 'Chicago' },
-                          'Chicago'
-                        ),
-                        _react2.default.createElement(
-                          'option',
-                          { value: 'O\'hare' },
-                          'O\'hare'
-                        ),
-                        _react2.default.createElement(
-                          'option',
-                          { value: 'UIUC' },
-                          'UIUC'
-                        )
-                      ),
-                      _react2.default.createElement(
-                        'p',
-                        null,
-                        'Seats Available:'
-                      ),
-                      _react2.default.createElement(
-                        'select',
-                        { value: this.state.numberSeats, onChange: this.seatsChange },
-                        _react2.default.createElement(
-                          'option',
-                          { value: '' },
-                          'Select the hasSeats Available'
-                        ),
-                        _react2.default.createElement(
-                          'option',
-                          { value: '1' },
-                          '1+'
-                        ),
-                        _react2.default.createElement(
-                          'option',
-                          { value: '4' },
-                          '4+'
-                        ),
-                        _react2.default.createElement(
-                          'option',
-                          { value: '100' },
-                          '100+'
-                        )
-                      ),
-                      _react2.default.createElement(
-                        'p',
-                        null,
-                        'Time Available:'
-                      ),
-                      _react2.default.createElement(
-                        'select',
-                        { value: this.state.time, onChange: this.hasTimeChange },
-                        _react2.default.createElement(
-                          'option',
-                          { value: '' },
-                          'Select the time period'
-                        ),
-                        _react2.default.createElement(
-                          'option',
-                          { value: 'morning' },
-                          'Morning'
-                        ),
-                        _react2.default.createElement(
-                          'option',
-                          { value: 'noon' },
-                          'Noon'
-                        ),
-                        _react2.default.createElement(
-                          'option',
-                          { value: 'afternoon' },
-                          'Afternoon'
-                        ),
-                        _react2.default.createElement(
-                          'option',
-                          { value: 'evening' },
-                          'Evening'
-                        )
-                      ),
-                      _react2.default.createElement(
-                        'p',
-                        null,
-                        'Select your Date:'
-                      ),
-                      _react2.default.createElement(
-                        'div',
-                        { className: 'calendar' },
-                        _react2.default.createElement(_reactDatepicker2.default, {
-                          selected: this.state.startDate,
-                          onChange: this.handleChange
-                        })
-                      ),
-                      _react2.default.createElement(
-                        'div',
-                        { className: 'button' },
-                        _react2.default.createElement(
-                          _semanticUiReact.Button,
-                          { type: 'submit' },
-                          'Search'
-                        )
-                      )
-                    )
-                  )
+                  _semanticUiReact.Button,
+                  { type: 'submit' },
+                  'Search'
                 )
               )
             )
@@ -89775,25 +89618,51 @@ var Passenger = function (_Component) {
           } else {
             return _react2.default.createElement(
               'div',
-              null,
+              { className: 'results' },
               _react2.default.createElement(
-                _semanticUiReact.Card,
-                null,
+                'div',
+                { className: 'navbar3' },
                 _react2.default.createElement(
                   'h1',
                   null,
                   'You\'ve submitted a reques to the Drive, below is the driver\'s contact information'
                 ),
                 _react2.default.createElement(
-                  'h2',
-                  null,
-                  'Name: ',
+                  'div',
+                  { className: 'buttons' },
+                  _react2.default.createElement(
+                    _reactRouterDom.Link,
+                    { to: '/Dashboard' },
+                    _react2.default.createElement(
+                      _semanticUiReact.Button,
+                      null,
+                      'Back'
+                    )
+                  ),
+                  _react2.default.createElement(
+                    _reactRouterDom.Link,
+                    { to: '/' },
+                    _react2.default.createElement(
+                      _semanticUiReact.Button,
+                      null,
+                      'Logout'
+                    )
+                  )
+                )
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: 'card' },
+                _react2.default.createElement(
+                  _semanticUiReact.Segment,
+                  { className: 'info' },
+                  'Drivers Name: ',
                   this.state.theDriver.driverName
                 ),
                 _react2.default.createElement(
-                  'h2',
-                  null,
-                  'Email: ',
+                  _semanticUiReact.Segment,
+                  { className: 'info' },
+                  'Drivers Email: ',
                   this.state.theDriver.driverEmail,
                   '@illinois.edu'
                 )
@@ -89830,15 +89699,13 @@ var Passenger = function (_Component) {
 exports.default = Passenger;
 
 /***/ }),
-/* 957 */,
-/* 958 */,
-/* 959 */
+/* 957 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(960);
+var content = __webpack_require__(958);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -89846,97 +89713,7 @@ var transform;
 var options = {"hmr":true}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(46)(content, options);
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../../node_modules/css-loader/index.js?-url!../../../node_modules/postcss-loader/lib/index.js!../../../node_modules/sass-loader/lib/loader.js!./main.scss", function() {
-			var newContent = require("!!../../../node_modules/css-loader/index.js?-url!../../../node_modules/postcss-loader/lib/index.js!../../../node_modules/sass-loader/lib/loader.js!./main.scss");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 960 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(45)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, "", ""]);
-
-// exports
-
-
-/***/ }),
-/* 961 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(962);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// Prepare cssTransformation
-var transform;
-
-var options = {"hmr":true}
-options.transform = transform
-// add the styles to the DOM
-var update = __webpack_require__(46)(content, options);
-if(content.locals) module.exports = content.locals;
-// Hot Module Replacement
-if(false) {
-	// When the styles change, update the <style> tags
-	if(!content.locals) {
-		module.hot.accept("!!../../../../node_modules/css-loader/index.js?-url!../../../../node_modules/postcss-loader/lib/index.js!../../../../node_modules/sass-loader/lib/loader.js!./Driver.scss", function() {
-			var newContent = require("!!../../../../node_modules/css-loader/index.js?-url!../../../../node_modules/postcss-loader/lib/index.js!../../../../node_modules/sass-loader/lib/loader.js!./Driver.scss");
-			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-			update(newContent);
-		});
-	}
-	// When the module is disposed, remove the <style> tags
-	module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 962 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(45)(undefined);
-// imports
-
-
-// module
-exports.push([module.i, ".Driver_filter {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  width: 100%;\n  text-align: left;\n  -webkit-transform: translate(-50%, -50%);\n          transform: translate(-50%, -50%); }\n\n/*body{\nbackground-image: url(\"https://i2.wp.com/haptik.ai/blog/wp-content/uploads/2017/04/Sharecab_EarthDay.png\");\nbackgroud-repeat:no-repeat;\nbackground-size: cover;\n\n}*/\n.logout {\n  position: absolute;\n  right: 0%;\n  top: 0%;\n  height: 50px; }\n\n.calendar {\n  position: absolute;\n  width: 20%; }\n\n.search {\n  margin-left: 200px;\n  width: 35%;\n  height: 600px;\n  background-color: white;\n  border-style: hidden;\n  border-width: 2px;\n  border-corner-shape: scoop;\n  border-radius: 20px;\n  opacity: 0.9; }\n\nh3 {\n  font-size: 30px; }\n\nh1 {\n  font-size: 40px; }\n\np {\n  font-size: 20px; }\n\n.bg {\n  margin-left: 50px;\n  padding-top: 80px;\n  font-weight: 10px; }\n\n.button {\n  padding-top: 50px;\n  font-size: 30px; }\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 963 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(964);
-if(typeof content === 'string') content = [[module.i, content, '']];
-// Prepare cssTransformation
-var transform;
-
-var options = {"hmr":true}
-options.transform = transform
-// add the styles to the DOM
-var update = __webpack_require__(46)(content, options);
+var update = __webpack_require__(39)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -89953,21 +89730,21 @@ if(false) {
 }
 
 /***/ }),
-/* 964 */
+/* 958 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(45)(undefined);
+exports = module.exports = __webpack_require__(38)(undefined);
 // imports
 
 
 // module
-exports.push([module.i, ".Passenger_filter {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  -webkit-transform: translate(-50%, -50%);\n          transform: translate(-50%, -50%); }\n\n/*body{\n  background-image: url(\"https://i2.wp.com/haptik.ai/blog/wp-content/uploads/2017/04/Sharecab_EarthDay.png\");\n  backgroud-repeat:no-repeat;\n  background-size: cover;\n\n}*/\n.logout {\n  position: absolute;\n  right: 0%;\n  top: 0%;\n  height: 50px; }\n\n.calendar {\n  position: absolute;\n  width: 20%; }\n\n.search {\n  margin-left: 200px;\n  width: 35%;\n  height: 600px;\n  background-color: white;\n  border-style: hidden;\n  border-width: 2px;\n  border-corner-shape: scoop;\n  border-radius: 20px;\n  opacity: 0.9; }\n\nh3 {\n  font-size: 30px; }\n\nh1 {\n  font-size: 40px; }\n\np {\n  font-size: 20px; }\n\n.bg {\n  margin-left: 50px;\n  padding-top: 80px;\n  font-weight: 10px; }\n\n.button {\n  padding-top: 50px;\n  font-size: 30px; }\n", ""]);
+exports.push([module.i, ".Passenger_filter {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  -webkit-transform: translate(-50%, -50%);\n          transform: translate(-50%, -50%); }\n\n/*body{\n  background-image: url(\"https://i2.wp.com/haptik.ai/blog/wp-content/uploads/2017/04/Sharecab_EarthDay.png\");\n  backgroud-repeat:no-repeat;\n  background-size: cover;\n\n}*/\n.Passenger {\n  width: 100%; }\n  .Passenger .nav h1 {\n    width: 40%;\n    float: left;\n    font-size: 150%; }\n  .Passenger .nav .buttons {\n    width: 50%;\n    float: right;\n    display: -webkit-box;\n    display: -ms-flexbox;\n    display: flex;\n    -webkit-box-pack: end;\n        -ms-flex-pack: end;\n            justify-content: flex-end; }\n\n.navbar3 h1 {\n  width: 40%;\n  float: left;\n  font-size: 150%; }\n\n.navbar3 .buttons {\n  width: 50%;\n  float: right;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-pack: end;\n      -ms-flex-pack: end;\n          justify-content: flex-end; }\n\n.results .card {\n  position: absolute;\n  top: 50%;\n  left: 50%;\n  -webkit-transform: translate(-50%, -50%);\n          transform: translate(-50%, -50%);\n  background-color: #FFFFCC; }\n\n.results .info {\n  padding-top: 30px;\n  padding-bottom: 30px; }\n\n.logout {\n  position: absolute;\n  right: 0%;\n  top: 0%;\n  height: 50px; }\n\n.calendar {\n  position: absolute;\n  width: 20%; }\n\n.search {\n  margin-left: 200px;\n  width: 35%;\n  height: 600px;\n  background-color: white;\n  border-style: hidden;\n  border-width: 2px;\n  border-corner-shape: scoop;\n  border-radius: 20px;\n  opacity: 0.9; }\n\nh3 {\n  font-size: 30px; }\n\nh1 {\n  font-size: 40px; }\n\np {\n  font-size: 20px; }\n\n.bg {\n  margin-left: 50px;\n  padding-top: 80px;\n  font-weight: 10px; }\n\n.button {\n  padding-top: 50px;\n  font-size: 30px; }\n", ""]);
 
 // exports
 
 
 /***/ }),
-/* 965 */
+/* 959 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -89983,11 +89760,11 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _semanticUiReact = __webpack_require__(57);
+var _semanticUiReact = __webpack_require__(48);
 
-var _reactRouterDom = __webpack_require__(47);
+var _reactRouterDom = __webpack_require__(40);
 
-var _styles = __webpack_require__(966);
+var _styles = __webpack_require__(960);
 
 var _styles2 = _interopRequireDefault(_styles);
 
@@ -90089,13 +89866,13 @@ var About = function (_Component) {
 exports.default = About;
 
 /***/ }),
-/* 966 */
+/* 960 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(967);
+var content = __webpack_require__(961);
 if(typeof content === 'string') content = [[module.i, content, '']];
 // Prepare cssTransformation
 var transform;
@@ -90103,7 +89880,7 @@ var transform;
 var options = {"hmr":true}
 options.transform = transform
 // add the styles to the DOM
-var update = __webpack_require__(46)(content, options);
+var update = __webpack_require__(39)(content, options);
 if(content.locals) module.exports = content.locals;
 // Hot Module Replacement
 if(false) {
@@ -90120,15 +89897,60 @@ if(false) {
 }
 
 /***/ }),
-/* 967 */
+/* 961 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(45)(undefined);
+exports = module.exports = __webpack_require__(38)(undefined);
 // imports
 
 
 // module
-exports.push([module.i, ".About {\n  background-color: #e6faff; }\n  .About .nav {\n    width: 100%; }\n    .About .nav h1 {\n      width: 40%;\n      float: left; }\n    .About .nav .buttons {\n      padding-top: 10px;\n      padding-bottom: 10px;\n      float: right;\n      display: -webkit-box;\n      display: -ms-flexbox;\n      display: flex;\n      -webkit-box-pack: end;\n          -ms-flex-pack: end;\n              justify-content: flex-end; }\n  .About #intro {\n    position: absolute;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n            transform: translateY(-50%);\n    width: 50%;\n    padding-left: 10px; }\n\n@media only screen and (max-width: 639px) {\n  .About {\n    background-color: yellow; } }\n\n@media (min-width: 640px) and (max-width: 1023px) {\n  .About {\n    background-color: black; } }\n\n@media (min-width: 1024px) {\n  body {\n    background-color: #e6faff; } }\n", ""]);
+exports.push([module.i, ".About {\n  background-color: #e6faff; }\n  .About .nav {\n    width: 100%; }\n    .About .nav h1 {\n      width: 40%;\n      float: left; }\n    .About .nav .buttons {\n      padding-top: 10px;\n      padding-bottom: 10px;\n      float: right;\n      display: -webkit-box;\n      display: -ms-flexbox;\n      display: flex;\n      -webkit-box-pack: end;\n          -ms-flex-pack: end;\n              justify-content: flex-end; }\n  .About #intro {\n    position: absolute;\n    top: 50%;\n    -webkit-transform: translateY(-50%);\n            transform: translateY(-50%);\n    width: 50%;\n    padding-left: 10px; }\n\n@media only screen and (max-width: 639px) {\n  body {\n    background-color: #e6faff; } }\n\n@media (min-width: 640px) and (max-width: 1023px) {\n  body {\n    background-color: #e6faff; } }\n\n@media (min-width: 1024px) {\n  body {\n    background-color: #e6faff; } }\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 962 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(963);
+if(typeof content === 'string') content = [[module.i, content, '']];
+// Prepare cssTransformation
+var transform;
+
+var options = {"hmr":true}
+options.transform = transform
+// add the styles to the DOM
+var update = __webpack_require__(39)(content, options);
+if(content.locals) module.exports = content.locals;
+// Hot Module Replacement
+if(false) {
+	// When the styles change, update the <style> tags
+	if(!content.locals) {
+		module.hot.accept("!!../../../node_modules/css-loader/index.js?-url!../../../node_modules/postcss-loader/lib/index.js!../../../node_modules/sass-loader/lib/loader.js!./main.scss", function() {
+			var newContent = require("!!../../../node_modules/css-loader/index.js?-url!../../../node_modules/postcss-loader/lib/index.js!../../../node_modules/sass-loader/lib/loader.js!./main.scss");
+			if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+			update(newContent);
+		});
+	}
+	// When the module is disposed, remove the <style> tags
+	module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 963 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(38)(undefined);
+// imports
+
+
+// module
+exports.push([module.i, "", ""]);
 
 // exports
 
