@@ -7,6 +7,7 @@ var userSchema = mongoose.Schema({
     password	: String,
     name:String,
     phoneNumber: {type: String, required: true, default: '+1 217-904-3333'},
+    gender: {type: String,required:true,default:''},
     dateCreated: {type: Date, default: Date.now},
     versionKey: false
 });

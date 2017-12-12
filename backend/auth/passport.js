@@ -32,6 +32,7 @@ module.exports = function(passport) {
                 console.log("hahahahahha" + req.body.phoneNumber);
                 newUser.phoneNumber = req.body.phoneNumber;
                 newUser.name=req.body.name;
+                newUser.gender=req.body.gender;
                 newUser.email = email;
                 newUser.password = newUser.generateHash(password);
                 newUser.save(function(err) {

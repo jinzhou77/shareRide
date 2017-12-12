@@ -1,8 +1,18 @@
 .Register {
-    color: limegreen;
+    color: navy;
     text-align: center;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.gender{
+  background-image: url(http://i62.tinypic.com/15xvbd5.png);
+  background-position: 97% center;
+  background-repeat: no-repeat;
+  border: 1px solid #AAA;
+  color: #555;
+  width: 200px;
+  font-size:100%;
 }

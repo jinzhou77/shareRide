@@ -8,6 +8,7 @@ import Login from './components/Login/Login.jsx';
 import Dashboard from './components/Dashboard/Dashboard.jsx';
 import Driver from './components/Driver/Driver.jsx';
 import Passenger from './components/Passenger/Passenger.jsx';
+import About from './components/About/About.jsx'
 import styles from './styles/main.scss';
 
 ReactDom.render(
@@ -16,6 +17,7 @@ ReactDom.render(
             <Route exact path="/" component={Home}/>
             <Route exact path="/login" component={Login}/>
             <Route exact path="/register" component={Register}/>
+            <Route exact path="/about" component={About}/>
             <Route exact path="/dashboard" component={Dashboard}/>
             <Route exact path="/Driver" component={Driver}/>
             <Route exact path="/Passenger" component={Passenger}/>

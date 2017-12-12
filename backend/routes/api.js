@@ -55,37 +55,38 @@ module.exports = function(router, passport) {
         })
     });
 
-  router.post('/', function (req, res) {
-      res.set({
-          'Content-Type': 'application/json'
-      });
-        if (req.body.name === '' || req.body.name === undefined || req.body.email === '' || req.body.email === undefined) {
-            res.status(403).json({message: 'name and email can not be empty!', data: {}});
-        } else {
-            Users.find({email: req.body.email}, function (err, usersSameEmail) {
-                if (err) {
-                    res.status(500).json({message: 'insert user error!', data: {}});
-                } else {
-                    if (usersSameEmail.length > 0) {
-                        res.status(403).json({message: 'email already exists!', data: {}});
-                    } else {
-                        const newUser = new Users({
-                            name: req.body.name,
-                            email: req.body.email,
-                            phoneNumber: req.body.phoneNumber
-                        });
-                        newUser.save(function (err, newUser) {
-                            if (err) {
-                                res.status(500).json({message: 'insert user error!', data: {}});
-                            } else {
-                                res.status(201).json({message: 'new user created', data: newUser});
-                            }
-                        });
-                    }
-                }
-            });
-          }
-    });
+  // router.post('/', function (req, res) {
+  //     res.set({
+  //         'Content-Type': 'application/json'
+  //     });
+  //       if (req.body.name === '' || req.body.name === undefined || req.body.email === '' || req.body.email === undefined) {
+  //           res.status(403).json({message: 'name and email can not be empty!', data: {}});
+  //       } else {
+  //           Users.find({email: req.body.email}, function (err, usersSameEmail) {
+  //               if (err) {
+  //                   res.status(500).json({message: 'insert user error!', data: {}});
+  //               } else {
+  //                   if (usersSameEmail.length > 0) {
+  //                       res.status(403).json({message: 'email already exists!', data: {}});
+  //                   } else {
+  //                       const newUser = new Users({
+  //                           name: req.body.name,
+  //                           email: req.body.email,
+  //                           gender:req.body.gender,
+  //                           phoneNumber: req.body.phoneNumber
+  //                       });
+  //                       newUser.save(function (err, newUser) {
+  //                           if (err) {
+  //                               res.status(500).json({message: 'insert user error!', data: {}});
+  //                           } else {
+  //                               res.status(201).json({message: 'new user created', data: newUser});
+  //                           }
+  //                       });
+  //                   }
+  //               }
+  //           });
+  //         }
+  //   });
     //User API END**************************************************************************************************************
 
   return router;

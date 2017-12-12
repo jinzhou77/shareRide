@@ -15,7 +15,8 @@ class Register extends Component {
                 password: '',
                 email: '',
                 phoneNumber:'',
-                name:''
+                name:'',
+                gender:'',
             },
 
             message: ''
@@ -26,6 +27,7 @@ class Register extends Component {
         this.onChangeEmail = this.onChangeEmail.bind(this);
         this.onChangePhoneNumber = this.onChangePhoneNumber.bind(this);
         this.onChangeName=this.onChangeName.bind(this);
+        this.onChangeGender= this.onChangeGender.bind(this);
     }
 
     onSubmit(e) {
@@ -36,7 +38,9 @@ class Register extends Component {
         const email = encodeURIComponent(this.state.user.email);
         const password = encodeURIComponent(this.state.user.password);
         const phoneNumber = encodeURIComponent(this.state.user.phoneNumber);
-        const formData = `name=${name}&email=${email}&password=${password}&phoneNumber=${phoneNumber}`;
+        const gender = encodeURIComponent(this.state.user.gender);
+
+        const formData = `name=${name}&email=${email}&password=${password}&phoneNumber=${phoneNumber}&gender=${gender}`;
 
         // create an AJAX POST request (This should probably done with Axios instead)
         const xhr = new XMLHttpRequest();
@@ -46,7 +50,7 @@ class Register extends Component {
         xhr.addEventListener('load', () => {
             if (xhr.status === 200) {
                 console.log('The form is valid');
-                console.log(this.state.user.name);
+                console.log(this.state.user.gender);
                 this.setState({
                     message: 'Registered!'
                 })
@@ -62,6 +66,7 @@ class Register extends Component {
     onChangeEmail(e) {
         const user = this.state.user;
         user.email = e.target.value;
+
         this.setState({
             user
         })
@@ -89,30 +94,44 @@ class Register extends Component {
         user
       })
     }
+    onChangeGender(e){
+      const user=this.state.user;
+      user.gender=e.target.value;
+      this.setState ({
+        user
+      })
+    }
     render() {
         return(
             <form className="Register" action="/" onSubmit={this.onSubmit}>
                 <Card className="Register__content">
                     <div>
                         <h1>Register</h1>
-                        <Input label="Email" onChange={this.onChangeEmail} />
+
+                        <Input size='small' label="Name" onChange={this.onChangeName} />
                         <br/><br/>
-                        <Input label="Name" onChange={this.onChangeName} />
+                        <Input size='small' label="Password" onChange={this.onChangePassword} />
                         <br/><br/>
-                        <Input label="Password" onChange={this.onChangePassword} />
+                        <Input size='small' label="@illinois.edu" labelPosition='right' placeholder='Email adress' onChange={this.onChangeEmail} />
                         <br/><br/>
-                        <Input label="phoneNumber" onChange={this.onChangePhoneNumber} />
+                        <Input size='small' label="phone#" onChange={this.onChangePhoneNumber} />
+                        <br/><br/>
+
+                        <select className='gender' value={this.state.user.gender} onChange={this.onChangeGender}>
+                          <option value=''>Select Your Gender</option>
+                          <option value='male'>Male</option>
+                          <option value='female'>Female</option>
+                        </select>
                         <br/><br/>
                         <p>{this.state.message}</p>
                         <Input type="submit" />
                         <h4>Already registered? Click <Link to="/login">here</Link> to Log-in!</h4>
-
                         <Link to="/dashboard"><p>Go to Dashboard</p></Link>
                     </div>
                 </Card>
             </form>
     )
-}
+  }
 }
 
 export default Register

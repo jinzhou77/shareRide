@@ -1,8 +1,34 @@
-.Home {
-    color: skyblue;
-    text-align: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+
+.nav {
+  width:100%;
+    h1{
+      width:40%;
+      float:left;
+      color:#333333;
+    }
+    .buttons{
+
+      padding-top:10px;
+      padding-bottom:10px;
+      float:right;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+}
+.Home{
+  background-color: #e6faff;
+}
+@media only screen and (max-width: 639px) {
+  .Home{
+    background-color: yellow;
+  }
+}
+@media (min-width: 640px) and (max-width: 1023px) {
+  .Home{
+    background-color: black;
+  }
+}
+@media (min-width: 1024px){
+
 }

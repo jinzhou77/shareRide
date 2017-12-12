@@ -1,9 +1,13 @@
 var mongoose = require('mongoose');
 
 const rideinfoSchema = mongoose.Schema({
-    driverName: {type: String, required: true},
+    driverName: String,
     driverEmail: String,
-    passengersEmail: [{type:String}],
+    driverGender:String,
+    passengerEmail: [{type:String}],
+    passengerGender:[{type:String}],
+    passengerSeats:[{type:String}],
+    passengerPhoneNumber:[{type:String}],
     departure: String,
     destination: String,
     departureTime: Number,
@@ -12,7 +16,9 @@ const rideinfoSchema = mongoose.Schema({
     dateCreated: {type: Date, default: Date.now},
     completed: {type: Boolean, default: false},
     versionKey: false,
-    date: String
+    date: String,
+    time:String,
+    phoneNumber:String
 });
 
 module.exports = mongoose.model('Rideinfo', rideinfoSchema);

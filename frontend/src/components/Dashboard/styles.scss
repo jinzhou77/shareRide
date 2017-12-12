@@ -1,8 +1,111 @@
-.Dashboard {
-    color: magenta;
-    text-align: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+
+
+#navbar {
+
+  .buttons{
+    width:100%;
+    padding-top:10px;
+    padding-bottom:10px;
+    float:right;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+//
+///* Navbar links */
+//#navbar a {
+//  float: left;
+//  display: block;
+//  color: #f2f2f2;
+//  text-align: center;
+//  padding: 14px;
+//  text-decoration: none;
+//}
+
+/* Page content */
+
+#welcome{
+     background-color: brown;
+
+ }
+// .logout{
+//   float: right;
+//
+// }
+
+.select{
+  width:90%;
+  display:flex;
+  justify-content: center;
+  margin:auto;
+}
+#Driver{
+  position:relative;
+  display:block;
+  opacity: 0.9;
+  filter: alpha(opacity=90);
+  width:45%;
+  float:right;
+}
+.content1{
+  position:absolute;
+  width:35%;
+  top:50%;
+  transform: translateY(-50%);
+  right:0px;
+  color:white;
+  padding-right:15px;
+}
+.content{
+  position:absolute;
+  color:white;
+  width:35%;
+  top:50%;
+  transform: translateY(-50%);
+  padding-left:15px;
+}
+#Passenger{
+  position:relative;
+  display:block;
+  opacity: 0.9;
+  filter: alpha(opacity=90);
+  width:45%;
+  float:left;
+}
+//
+//
+#Driver:hover {
+  opacity: 1.0;
+  filter: alpha(opacity=50); /* For IE8 and earlier */
+  width:80%;
+}
+
+#Passenger:hover {
+  opacity: 1.0;
+  filter: alpha(opacity=50); /* For IE8 and earlier */
+  width:80%;
+}
+
+// .select:after {
+//   content: "";
+//   display: table;
+//   clear: both;
+// }
+//
+.request{
+  #navbar2 {
+
+    h1{
+      width:40%;
+      float:left;
+    }
+    .buttons{
+      width:60%;
+      padding-top:10px;
+      padding-bottom:10px;
+      float:right;
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
 }

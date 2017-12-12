@@ -1,0 +1,61 @@
+.Driver_filter{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width: 100%;
+  text-align: left;
+  transform:translate(-50%, -50%);
+
+}
+/*body{
+background-image: url("https://i2.wp.com/haptik.ai/blog/wp-content/uploads/2017/04/Sharecab_EarthDay.png");
+backgroud-repeat:no-repeat;
+background-size: cover;
+
+}*/
+.logout{
+  position:absolute;
+  right:0%;
+  top:0%;
+  height:50px;
+}
+.calendar{
+  position:absolute;
+  width: 20%;
+}
+
+.search{
+  margin-left:200px;
+  width: 35%;
+  height:600px;
+  background-color: white;
+  border-style: hidden;
+  border-width: 2px;
+  border-corner-shape:scoop;
+  border-radius:20px;
+  opacity: 0.9;
+
+}
+h3{
+  font-size:30px;
+
+}
+h1{
+  font-size:40px;
+}
+p{
+  font-size:20px;
+}
+
+.bg {
+  margin-left: 50px;
+  padding-top: 80px;
+  font-weight:10px;
+}
+
+.button{
+
+  padding-top:50px;
+  font-size: 30px;
+
+}

@@ -13,7 +13,8 @@ class Login extends Component {
         this.state = {
             user: {
                 password: '',
-                email: ''
+                email: '',
+                gender:''
             },
 
             message: ''
@@ -31,7 +32,7 @@ class Login extends Component {
         const password = encodeURIComponent(this.state.user.password);
         const formData = `email=${email}&password=${password}`;
 
-        // create an AJAX request (This should probably done with Axios instead) 
+        // create an AJAX request (This should probably done with Axios instead)
         const xhr = new XMLHttpRequest();
         xhr.open('post', '/api/login');
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -72,9 +73,9 @@ class Login extends Component {
             <Card className="Login__content">
                 <div>
                     <h1>Login</h1>
-                    <Input label="Email" onChange={this.onChangeEmail} />
+                    <Input placeholder="You NetId" label="@illinois.edu" labelPosition='right' onChange={this.onChangeEmail} />
                     <br/><br/>
-                    <Input label="Password" onChange={this.onChangePassword} />
+                    <Input label=" Password" onChange={this.onChangePassword} />
                     <br/><br/>
 
                     <p>{this.state.message}</p>
