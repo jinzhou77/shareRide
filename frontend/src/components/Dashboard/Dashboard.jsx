@@ -33,7 +33,8 @@ class Dashboard extends Component {
       const formData=`{"driverName":"${driverName}"}`;
       const xhr= new XMLHttpRequest();
       xhr.responseType ='json';
-      xhr.open("GET","http://localhost:3000/api/rideInfo?where="+formData);
+      xhr.open("GET","http://localhost:3000/api/rideInfo/?where="+formData);
+      console.log("http://localhost:3000/api/rideInfo/?where="+formData);
       xhr.onload = () =>{
         if(xhr.readyState === xhr.DONE) {
           console.log(xhr.response.data);

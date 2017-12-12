@@ -1,13 +1,22 @@
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
-const app = express();
 const passport = require('passport')
 const config = require('./config');
 const User = require('./')
 const router = express.Router();
 const cookieSession = require('cookie-session');
 const cookieParser = require('cookie-parser');
+
+const app = express();
+
+var allowCrossDomain = function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept");
+    res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
+    next();
+};
+app.use(allowCrossDomain);
 
 app.use(express.static('./backend/static/'));
 app.use(express.static('./frontend/dist/'));
@@ -61,7 +70,10 @@ var rideInfo = require('./backend/routes/rideInfo');
 app.use('/api/rideInfo', rideInfo)
 /* =========================================================================== */
 
-// start the server
+// start the server//cant run local
+// app.listen(process.env.PORT, () => {
+//   console.log('Server is running on http://localhost:3000 or http://127.0.0.1:3000');
+// });
 app.listen(3000, () => {
   console.log('Server is running on http://localhost:3000 or http://127.0.0.1:3000');
 });

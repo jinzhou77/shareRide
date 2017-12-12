@@ -68,8 +68,9 @@ class Passenger extends Component {
         const formData = `{"departure":"${departure}","destination":"${destination}","hasSeats":"${hasSeats}","date":"${date}","time":"${time}"}`;
         const xhr= new XMLHttpRequest();
 
-        xhr.open("GET", "http://localhost:3000/api/rideInfo?where="+formData);
+        xhr.open("GET", "http://localhost:3000/api/rideInfo/?where="+formData);
         // xhr.onreadystatechange = () =>{
+        console.log("http://localhost:3000/api/rideInfo/?where="+formData);
         xhr.responseType = 'json';
         // xhr.onreadystatechange = () =>{
         xhr.onload = () => {

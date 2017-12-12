@@ -11,7 +11,7 @@ class Home extends Component {
             <div className="Home">
               <div className='nav'>
 
-              <h1>  Welcome to ShareRide!</h1>
+              <h1>  Welcome to LongShareRide!</h1>
               <div className='buttons'>
                 <Link to="/">
                   <Button>
