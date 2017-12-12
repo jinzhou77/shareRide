@@ -74,9 +74,7 @@ app.use('/api/rideInfo', rideInfo)
 /* =========================================================================== */
 
 // start the server//cant run local
-app.listen(process.env.PORT, () => {
-  console.log('Server is running on http://localhost:3000 or http://127.0.0.1:3000');
-});
+app.listen(process.env.PORT || 3000, 'fa17-cs411-37.cs.illinois.edu');
 // app.listen(3000, () => {
 //   console.log('Server is running on http://localhost:3000 or http://127.0.0.1:3000');
 // });
