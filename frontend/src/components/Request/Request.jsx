@@ -38,7 +38,7 @@ class Request extends Component {
       const formData=`{"driverName":"${driverName}"}`;
       const xhr= new XMLHttpRequest();
       xhr.responseType ='json';
-      xhr.open("GET","http://fa17-cs411-37.cs.illinois.edu:3000/api/rideinfo/?where="+formData);
+      xhr.open("GET","/api/rideinfo/?where="+formData);
       console.log("http://localhost:3000/api/rideInfo/?where="+formData);
       xhr.onload = () =>{
         if(xhr.readyState === xhr.DONE) {
