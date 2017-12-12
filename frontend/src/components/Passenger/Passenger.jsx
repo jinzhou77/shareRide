@@ -68,7 +68,7 @@ class Passenger extends Component {
         const formData = `{"departure":"${departure}","destination":"${destination}","hasSeats":"${hasSeats}","date":"${date}","time":"${time}"}`;
         const xhr= new XMLHttpRequest();
 
-        xhr.open("GET", "http://localhost:3000/api/rideInfo/?where="+formData);
+        xhr.open("GET", "https://git.heroku.com/dry-temple-92256.git?where="+formData);
         // xhr.onreadystatechange = () =>{
         console.log("http://localhost:3000/api/rideInfo/?where="+formData);
         xhr.responseType = 'json';
@@ -155,7 +155,7 @@ class Passenger extends Component {
     console.log(this.state.startDate);
     //console.log(moment(this.state.startDate).format('DD-MM-YYYY'));
     if(this.state.passengerClicked){
-      url="http://localhost:3000/api/rideInfo/"+this.state.theDriver._id;
+      url="https://git.heroku.com/dry-temple-92256.git/"+this.state.theDriver._id;
       console.log(url);
       console.log('fffffjfjfjfjfjjfjfjfjfj')
       console.log(this.state.theDriver);
@@ -181,19 +181,19 @@ class Passenger extends Component {
       }
       xhr.send(json);
       //////////////////////////////////////////////////////////////
-      var url2 = "http://localhost:3000/api/rideInfo/messagealert";
-      var xhr2 = new XMLHttpRequest();
-      //console.log("haha" + this.state.data);
-      var driverPhoneNumber = this.state.theDriver.phoneNumber;
-      console.log("phone: " + driverPhoneNumber);
-      var json2 = `driverPhoneNumber=${driverPhoneNumber}`;
-      xhr2.open("POST", url2, true);
-      xhr2.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-      xhr2.responseType='json';
-      xhr2.addEventListener('load', () => {
-          console.log("didn't send");
-      });
-      xhr2.send(json2);
+      // var url2 = "http://localhost:3000/api/rideInfo/messagealert";
+      // var xhr2 = new XMLHttpRequest();
+      // //console.log("haha" + this.state.data);
+      // var driverPhoneNumber = this.state.theDriver.phoneNumber;
+      // console.log("phone: " + driverPhoneNumber);
+      // var json2 = `driverPhoneNumber=${driverPhoneNumber}`;
+      // xhr2.open("POST", url2, true);
+      // xhr2.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      // xhr2.responseType='json';
+      // xhr2.addEventListener('load', () => {
+      //     console.log("didn't send");
+      // });
+      // xhr2.send(json2);
       ///////////////////////////////////////////////////////////////
     }
     if(this.state.isLoggedIn){

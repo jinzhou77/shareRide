@@ -38,7 +38,7 @@ class Request extends Component {
       const formData=`{"driverName":"${driverName}"}`;
       const xhr= new XMLHttpRequest();
       xhr.responseType ='json';
-      xhr.open("GET","http://localhost:3000/api/rideInfo/?where="+formData);
+      xhr.open("GET","https://git.heroku.com/dry-temple-92256.git?where="+formData);
       console.log("http://localhost:3000/api/rideInfo/?where="+formData);
       xhr.onload = () =>{
         if(xhr.readyState === xhr.DONE) {
@@ -120,7 +120,7 @@ class Request extends Component {
           this.state.thePassenger.passengerSeats.splice(index,1);
           var json=JSON.stringify(this.state.thePassenger);
           var xhr=new XMLHttpRequest();
-          let url="http://localhost:3000/api/rideInfo/"+this.state.thePassenger._id;
+          let url="https://git.heroku.com/dry-temple-92256.git/"+this.state.thePassenger._id;
           xhr.open ("PUT", url,true);
           xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
           xhr.onload = () => {
@@ -148,7 +148,7 @@ class Request extends Component {
           this.state.thePassenger.passengerSeats.splice(index,1);
           var json=JSON.stringify(this.state.thePassenger);
           var xhr=new XMLHttpRequest();
-          let url="http://localhost:3000/api/rideInfo/"+this.state.thePassenger._id;
+          let url="https://git.heroku.com/dry-temple-92256.git/"+this.state.thePassenger._id;
           xhr.open ("PUT", url,true);
           xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
           xhr.onload = () => {
