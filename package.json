@@ -1,7 +1,7 @@
 {
   "name": "passport_demo_2017",
   "version": "1.0.0",
-  "description": "",
+  "description": "This basic implementation of adding Passport to an existing project was used as a demonstration for CS498 RK1. This code is provided as-is for learning purposes, and is NOT meant to be a 'starter code' for students' final projects. You are free to use it as such if you would like, but you are responsible for installing whatever packages you may want, making sure there are no bugs, and modifying the code as necessary to fit into your projects.",
   "main": "index.js",
   "scripts": {
     "start": "nodemon --use_strict index.js",
@@ -37,7 +37,6 @@
     "semantic-ui-react": "^0.76.0",
     "twilio": "^3.10.1",
     "validator": "^9.2.0"
-
   },
   "devDependencies": {
     "autoprefixer": "^7.1.6",
@@ -57,5 +56,13 @@
   "engines": {
     "node:": "6.11.2",
     "npm": "^3.10.10"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/myang39/share_ride2.git"
+  },
+  "bugs": {
+    "url": "https://github.com/myang39/share_ride2/issues"
+  },
+  "homepage": "https://github.com/myang39/share_ride2#readme"
 }
