@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Input, Icon,Dropdown,Card,Table, Form,Divider,Segment } from 'semantic-ui-react'
+import { Button, Input, Icon,Dropdown,Card,Table, Form,Divider,Segment,Container } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import axios from  'axios'
 import PropTypes from 'prop-types';
@@ -145,7 +145,7 @@ class Passenger extends Component {
     const options3=[
       {keys:'1', text:"1+", value:'1'},
       {keys:'3', text:"3+", value:'3'},
-      {keys:'6', text:"6+", value:'6'}
+      {keys:'5', text:"5+", value:'5'}
     ]
     console.log(this.state.departureValue);
     console.log(this.state.destinationValue);
@@ -202,17 +202,18 @@ class Passenger extends Component {
           <div className="Passenger">
 
             <div className="nav">
-              <h1>Hi {this.state.passengerName}, this is Passenger page</h1>
+              <h1>Hi, {this.state.passengerName}, This is Passenger page</h1>
               <div className="buttons">
                 <Link to="/dashboard"><Button>Back</Button></Link>
                 <Link to="/"><Button>Logout</Button></Link>
               </div>
             </div>
 
-            <form className="Passenger_filter" onSubmit={this.onSubmit}>
-                <h1>Welcome {this.state.driverName}</h1>
-                <h3>Pick the ride details you'd like to take.</h3>
-
+<iframe id="gif1" src="https://giphy.com/embed/jvbQuNWohvydW"  frameBorder="0" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/patrick-ride-enjoying-jvbQuNWohvydW"></a></p>
+                <div  className="Passenger_filter">
+                <Container className='container1'>
+                <h1 id='welcome'>Welcome {this.state.passengerName}</h1>
+                <h3 id='pick'>pick the ride details you'd like to take.</h3>
                 <Form>
                 <Form.Group widths='equal'>
                   <Form.Select label="Departure" value={this.state.departureValue} onChange={this.departureChange} options={options} placeholder='Departure' />
@@ -221,23 +222,22 @@ class Passenger extends Component {
                 {/* (e,{value})=>alert(value) */}
                 <Form.Group widths='equal'>
                   <Form.Select label="Time Period" value={this.state.time} onChange={this.hasTimeChange} options={options2} placeholder='Time Period' />
-                  <Form.Select label="Seats Available" value={this.state.numberSeats} onChange={this.seatsChange} options={options3} placeholder='Seats Available' />
+                  <Form.Select label="Seats Need" value={this.state.numberSeats} onChange={this.seatsChange} options={options3} placeholder='Seats Available' />
                 </Form.Group>
                 </Form>
 
-                  <p>Select your Date:</p>
+                  <p id="date">Select your Date:</p>
                   <div className="calendar">
                   <DatePicker
                       selected={this.state.startDate}
                       onChange={this.handleChange}
                   />
+                  <Button type="submit" onClick={this.onSubmit}>Search</Button>
+                  </div>
+                  </Container>
+                  </div>
                 </div>
-                      <div className = "button">
-                        <Button type="submit">Search</Button>
-                      </div>
-      </form>
-    </div>
-  )
+                )
         }else{
           if(!this.state.passengerClicked){
             return(

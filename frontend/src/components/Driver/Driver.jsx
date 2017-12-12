@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Input, Icon,Dropdown, Card,Form } from 'semantic-ui-react'
+import { Button, Input, Icon,Dropdown, Card,Form,Container } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import DatePicker from 'react-datepicker';
@@ -126,54 +126,53 @@ class Driver extends Component {
       {keys:'morning',text:'Morning', value:'morning'},
       {keys:'noon',text:'Noon', value:'noon'},
       {keys:'afternoon',text:'Afternoon', value:'afternoon'},
+      {keys:'evening',text:'Evening', value:'evening'},
     ]
     const options3=[
       {keys:'1', text:"1+", value:'1'},
       {keys:'3', text:"3+", value:'3'},
-      {keys:'6', text:"6+", value:'6'}
+      {keys:'5', text:"5+", value:'5'}
     ]
     if(this.state.isLoggedIn){
       return(
         <div className="Driver">
 
           <div className="nav">
-            <h1>Hi {this.state.driverName}, this is Driver page</h1>
+            <h1>Hi {this.state.driverName}, This is Driver page</h1>
             <div className="buttons">
               <Link to="/dashboard"><Button>Back</Button></Link>
               <Link to="/"><Button>Logout</Button></Link>
             </div>
           </div>
 
-          <form onSubmit={this.onSubmit} className="Driver_filter">
+                  <iframe id="gif" src="https://giphy.com/embed/WcXyczajw7q0M" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/driving-WcXyczajw7q0M"></a></p>
+                  <div className="Driver_filter">
+                    <Container className='container'>
                     <h1>Welcome {this.state.driverName}</h1>
                     <h3>Post the ride details you'd like to offer.</h3>
+                  <Form>
+                  <Form.Group widths='equal'>
+                    <Form.Select label="Departure" value={this.state.departureValue} onChange={this.departureChange} options={options} placeholder='Departure' />
+                    <Form.Select label="Destination" value={this.state.destinationValue} onChange={this.destinationChange} options={options} placeholder='Destination' />
+                  </Form.Group>
+                  {/* (e,{value})=>alert(value) */}
+                  <Form.Group widths='equal'>
+                    <Form.Select label="Time Period" value={this.state.time} onChange={this.hasTimeChange} options={options2} placeholder='Time Period' />
+                    <Form.Select label="Seats Available" value={this.state.hasSeats} onChange={this.hasSeatsChange} options={options3} placeholder='Seats Available' />
+                  </Form.Group>
+                  </Form>
 
 
-                    <Form>
-                    <Form.Group widths='equal'>
-                      <Form.Select label="Departure" value={this.state.departureValue} onChange={this.departureChange} options={options} placeholder='Departure' />
-                      <Form.Select label="Destination" value={this.state.destinationValue} onChange={this.destinationChange} options={options} placeholder='Destination' />
-                    </Form.Group>
-                    {/* (e,{value})=>alert(value) */}
-                    <Form.Group widths='equal'>
-                      <Form.Select label="Time Period" value={this.state.time} onChange={this.hasTimeChange} options={options2} placeholder='Time Period' />
-                      <Form.Select label="Seats Available" value={this.state.hasSeats} onChange={this.hasSeatsChange} options={options3} placeholder='Seats Available' />
-                    </Form.Group>
-                    </Form>
-
-
-                <p>Select your Date:</p>
+                  <p>Select your Date:</p>
                   <div className="calendar">
-                <DatePicker classname="calendar"
+                  <DatePicker
                     selected={this.state.startDate}
                     onChange={this.handleChange}
-                />
+                  />
+                  <Button type='submit' onClick={this.onSubmit} >Post</Button>
                   </div>
-
-                  <div className = "button">
-                      <Button type='submit' >Post</Button>
-                    </div>
-                  </form>
+                  </Container>
+                  </div>
               </div>
       )
     }else{

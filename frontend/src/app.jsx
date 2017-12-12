@@ -8,8 +8,10 @@ import Login from './components/Login/Login.jsx';
 import Dashboard from './components/Dashboard/Dashboard.jsx';
 import Driver from './components/Driver/Driver.jsx';
 import Passenger from './components/Passenger/Passenger.jsx';
-import About from './components/About/About.jsx'
+import About from './components/About/About.jsx';
+import Request from './components/Request/Request.jsx'
 import styles from './styles/main.scss';
+
 
 ReactDom.render(
     <Router>
@@ -21,6 +23,7 @@ ReactDom.render(
             <Route exact path="/dashboard" component={Dashboard}/>
             <Route exact path="/Driver" component={Driver}/>
             <Route exact path="/Passenger" component={Passenger}/>
+            <Route exact path="/Request" component={Request} />
         </Switch>
     </Router>,
     document.getElementById('react-app')

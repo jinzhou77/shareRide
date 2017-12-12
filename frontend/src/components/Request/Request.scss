@@ -1,0 +1,44 @@
+#navbar2 {
+  width:100%;
+  .request{
+    width:40%;
+    float:left;
+  }
+  .buttons{
+    padding-top:10px;
+    padding-bottom:10px;
+    display: flex;
+    justify-content: flex-end;
+    background-color:#e6faff;
+
+  }
+}
+// .pop{
+//   position:absolute;
+// }
+.Trips{
+  padding-top:30px;
+}
+.request{
+  padding-bottom:30px;
+}
+.transition{
+  .content{
+    color:black;
+  }
+
+  #modal{
+    .actions{
+      p{
+        width:70%;
+        float:left;
+      }
+      .but{
+        float:right;
+        color:black;
+        visibility: visible;
+        display:inline;
+      }
+    }
+  }
+}

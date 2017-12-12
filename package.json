@@ -53,10 +53,6 @@
     "style-loader": "^0.19.0",
     "webpack": "^3.8.1"
   },
-  "engines": {
-    "node:": "6.11.2",
-    "npm": "^3.10.10"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/myang39/share_ride2.git"

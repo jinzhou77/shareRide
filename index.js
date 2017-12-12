@@ -1,5 +1,6 @@
 const path = require('path');
 const express = require('express');
+const app = express();
 const bodyParser = require('body-parser');
 const passport = require('passport')
 const config = require('./config');
@@ -8,15 +9,14 @@ const router = express.Router();
 const cookieSession = require('cookie-session');
 const cookieParser = require('cookie-parser');
 
-const app = express();
 
-var allowCrossDomain = function (req, res, next) {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept");
-    res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
-    next();
-};
-app.use(allowCrossDomain);
+// var allowCrossDomain = function (req, res, next) {
+//     res.header("Access-Control-Allow-Origin", "*");
+//     res.header("Access-Control-Allow-Headers", "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept");
+//     res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
+//     next();
+// };
+// app.use(allowCrossDomain);
 
 app.use(express.static('./backend/static/'));
 app.use(express.static('./frontend/dist/'));
@@ -47,6 +47,9 @@ app.route('/Passenger').get(function(req,res) {
   return res.sendFile(path.join(__dirname, './backend/static/index.html'));
 });
 app.route('/About').get(function(req,res) {
+  return res.sendFile(path.join(__dirname, './backend/static/index.html'));
+});
+app.route('/Request').get(function(req,res) {
   return res.sendFile(path.join(__dirname, './backend/static/index.html'));
 });
 /* New things ================================================================ */

@@ -1,77 +1,159 @@
 
-
 #navbar {
 
   .buttons{
     width:100%;
     padding-top:10px;
     padding-bottom:10px;
-    float:right;
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-start;
+    background-color:#e6faff;
   }
 }
-//
-///* Navbar links */
-//#navbar a {
-//  float: left;
-//  display: block;
-//  color: #f2f2f2;
-//  text-align: center;
-//  padding: 14px;
-//  text-decoration: none;
-//}
 
-/* Page content */
 
-#welcome{
-     background-color: brown;
+#menu{
+  display:none;
+  font-size:20px;
+}
 
- }
-// .logout{
-//   float: right;
-//
-// }
+@media only screen and (max-width: 768px) {
+  .buttons{
+    #home,#request,#about,#out{
+      display:none;
+    }
+    #menu{
+        display:inline;
+      }
+    }
+  #Driver{
+    display:flex;
+    justify-content:space-around;
+    padding-right:5px;
+    padding-left:5px;
+    #wheel{
+      width:65%;
+      height:70%;
+    }
+    .content1{
+      text-align:center;
+    }
+    margin-bottom:30px;
+  }
 
-.select{
-  width:90%;
-  display:flex;
-  justify-content: center;
-  margin:auto;
+  #Passenger{
+    display:flex;
+    justify-content:space-around;
+    // padding-right:5px;
+    padding-left:5px;
+    #happy{
+      width:65%;
+      height:70%;
+    }
+    .content2{
+      text-align:center;
+    }
+  }
 }
-#Driver{
-  position:relative;
-  display:block;
-  opacity: 0.9;
-  filter: alpha(opacity=90);
-  width:45%;
-  float:right;
+@media (min-width: 769px) and (max-width: 1023px) {
+  #Passenger{
+    position:relative;
+    display:block;
+    opacity: 0.9;
+    filter: alpha(opacity=90);
+    width:45%;
+    float:left;
+  }
+  #Driver{
+    position:relative;
+    display:block;
+    opacity: 0.9;
+    filter: alpha(opacity=90);
+    width:45%;
+    float:right;
+  }
+  .select{
+    width:90%;
+    display:flex;
+    justify-content:space-around;
+    margin:auto;
+  }
+  .content1{
+    position:absolute;
+    overflow:auto;
+    width:35%;
+    height:85%;
+    top:50%;
+    transform: translateY(-50%);
+    right:0px;
+    color: #ffffcc;
+    padding-right:15px;
+    font-size:100%;
+  }
+  .content2{
+    position:absolute;
+    overflow:auto;
+    color: navy;
+    width:45%;
+    height:85%;
+    top:50%;
+    transform: translateY(-50%);
+    padding-left:15px;
+    p{
+      font-size:100%;
+    }
+  }
 }
-.content1{
-  position:absolute;
-  width:35%;
-  top:50%;
-  transform: translateY(-50%);
-  right:0px;
-  color:white;
-  padding-right:15px;
+@media (min-width: 1024px){
+  #Passenger{
+    position:relative;
+    display:block;
+    opacity: 0.9;
+    filter: alpha(opacity=90);
+    width:45%;
+    float:left;
+  }
+  #Driver{
+    position:relative;
+    display:block;
+    opacity: 0.9;
+    filter: alpha(opacity=90);
+    width:45%;
+    float:right;
+  }
+  .select{
+    width:90%;
+    display:flex;
+    justify-content:space-around;
+    margin:auto;
+  }
+  .content1{
+    position:absolute;
+    overflow:auto;
+    width:35%;
+    height:85%;
+    top:50%;
+    transform: translateY(-50%);
+    right:0px;
+    color: #ffffcc;
+    padding-right:15px;
+    font-size:130%;
+  }
+  .content2{
+    position:absolute;
+    overflow:auto;
+    color: navy;
+    width:45%;
+    height:85%;
+    top:50%;
+    transform: translateY(-50%);
+    padding-left:15px;
+    p{
+      font-size:130%;
+    }
+  }
 }
-.content{
-  position:absolute;
-  color:white;
-  width:35%;
-  top:50%;
-  transform: translateY(-50%);
-  padding-left:15px;
-}
-#Passenger{
-  position:relative;
-  display:block;
-  opacity: 0.9;
-  filter: alpha(opacity=90);
-  width:45%;
-  float:left;
-}
+
 //
 //
 #Driver:hover {
@@ -91,18 +173,3 @@
 //   clear: both;
 // }
 //
-
-  #navbar2 {
-    h1{
-      width:40%;
-      float:left;
-    }
-    .buttons{
-      width:60%;
-      padding-top:10px;
-      padding-bottom:10px;
-      float:right;
-      display: flex;
-      justify-content: flex-end;
-    }
-  }

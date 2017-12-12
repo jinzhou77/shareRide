@@ -1,18 +1,48 @@
 
 
-.Passenger_filter{
+#gif1{
   position:absolute;
-  top:50%;
+  width:50%;
+  height:50%;
   left:50%;
-  transform:translate(-50%,-50%);
+  top:7%;
+  transform: translateX(-50%);
 }
-
 /*body{
   background-image: url("https://i2.wp.com/haptik.ai/blog/wp-content/uploads/2017/04/Sharecab_EarthDay.png");
   backgroud-repeat:no-repeat;
   background-size: cover;
 
 }*/
+@media only screen and (max-width: 768px) {
+
+  .Passenger_filter{
+
+    position:absolute;
+    top:90%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background-color:#FFFFCC;
+  }
+}
+@media (min-width: 769px) and (max-width: 1023px) {
+  .Passenger_filter{
+    position:absolute;
+    top:85%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background-color:#FFFFCC;
+  }
+}
+@media (min-width: 1024px){
+  .Passenger_filter{
+    position:absolute;
+    top:90%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background-color:#FFFFCC;
+  }
+}
 .Passenger{
   width:100%;
   .nav{
@@ -61,10 +91,10 @@
   top:0%;
   height:50px;
 }
-.calendar{
-  position:absolute;
-  width: 20%;
-}
+// .calendar{
+//   position:absolute;
+//   width: 70%;
+// }
 
 .search{
   margin-left:200px;
@@ -78,14 +108,14 @@
   opacity: 0.9;
 
 }
-h3{
+#pick{
   font-size:30px;
 
 }
-h1{
+#welcome{
   font-size:40px;
 }
-p{
+#date{
   font-size:20px;
 }
 
@@ -95,7 +125,7 @@ p{
   font-weight:10px;
 }
 
-.button{
+.search{
 
   padding-top:50px;
   font-size: 30px;

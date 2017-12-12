@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, Card,Table,Image,Icon } from 'semantic-ui-react'
+import { Button, Card,Table,Image,Icon, Confirm, Divider,Menu, Dropdown} from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 
@@ -11,58 +11,16 @@ class Dashboard extends Component {
         super();
         this.state = {
             isLoggedIn: false,
-            userData:{},
-            driverData:[],
-            number:'',
-            historyClicked:false,
-            accept:false,
-            decline:false,
-            thePassenger:[],
-            index:4
         }
 
         this.logOut = this.logOut.bind(this);
-        this.onSubmit= this.onSubmit.bind(this);
-        this.acceptChange= this.acceptChange.bind(this);
-        this.declineChange= this.declineChange.bind(this);
     }
-    onSubmit(e){
-      e.preventDefault();
-      console.log(this.state.userData);
-      const driverName=this.state.userData.name;
-      const formData=`{"driverName":"${driverName}"}`;
-      const xhr= new XMLHttpRequest();
-      xhr.responseType ='json';
-      xhr.open("GET","http://localhost:3000/api/rideInfo/?where="+formData);
-      console.log("http://localhost:3000/api/rideInfo/?where="+formData);
-      xhr.onload = () =>{
-        if(xhr.readyState === xhr.DONE) {
-          console.log(xhr.response.data);
-          if(xhr.status ==200){
-            this.setState({
-              historyClicked:true,
-              driverData:xhr.response.data
-            })
-          }else{
-            console.log("did not get driver data");
-          }
-        }
-      }
-      xhr.send();
-    }
-    acceptChange(e,data){
-      e.preventDefault();
-      this.setState({
-        accept:true,
-        number:data.value
-      })
-    }
+
     componentDidMount() {
         axios.get('/api/users').then( (res) => {
           console.log(res.data.user);
             this.setState({
                 isLoggedIn: true,
-                userData:res.data.user,
             })
         }).catch( (err) => {
             this.setState({
@@ -77,136 +35,56 @@ class Dashboard extends Component {
             console.log("Logged out");
         })
     }
-    declineChange(e,data){
-        e.preventDefault();
-        this.setState({
-          decline:true,
-          thePassenger:data.x,
-          index:e.target.value
-        })
-    }
     render() {
-      console.log('lalalalla');
-      console.log(this.state.thePassenger);
-      if(this.state.decline){
-        const index= this.state.index;
-        this.state.thePassenger.passengerEmail.splice(index,1);
-        this.state.thePassenger.passengerGender.splice(index,1);
-        this.state.thePassenger.passengerPhoneNumber.splice(index,1);
-        const seats= +(this.state.thePassenger.hasSeats);
-        const seatsReq = +(this.state.thePassenger.passengerSeats[index]);
-        var sum=seats+seatsReq;
-        this.state.thePassenger.hasSeats=sum.toString();
-        this.state.thePassenger.passengerSeats.splice(index,1);
-        var json=JSON.stringify(this.state.thePassenger);
-        var xhr=new XMLHttpRequest();
-        let url="http://localhost:3000/api/rideInfo/"+this.state.thePassenger._id;
-        xhr.open ("PUT", url,true);
-        xhr.setRequestHeader('Content-type','application/json; charset=utf-8');
-        xhr.onload = () => {
-          var rideUpdated = JSON.parse(xhr.responseText);
-          if(xhr.readyState == 4 && xhr.status===200){
-            console.log(rideUpdated);
-            alert("You have decline the passenger's request, Thanks for your response");
-          }else{
-            console.log("did not update anything");
-          }
-        }
-        xhr.send(json);
-      }
-      if(this.state.accept){
-        alert('You have accept the passenger request, please call '+this.state.number);
-      }
-        if (this.state.isLoggedIn) {
-          if(!this.state.historyClicked){
+      if (this.state.isLoggedIn) {
           return(
                 <div className="Dashboard">
                   <div id="navbar">
-                    <div className='buttons'>
-                      <Link to="/Dashboard"><Button>Home</Button></Link>
 
-
-                      <form onSubmit={this.onSubmit}>
-                        <Button type="submit">History Request</Button>
-                      </form>
-                      <Link to="/About"><Button >About  </Button></Link>
-
-                      <Link to="/"><Button className = "logoutButton">Logout</Button></Link>
-
+                      <Menu borderless className='buttons'>
+                      <Menu.Item ><Link to="/Dashboard"><Button id='home'>Home</Button></Link></Menu.Item>
+                      <Menu.Item ><Link to="/Request"><Button id='request'>History Request</Button></Link></Menu.Item>
+                      <Menu.Item ><Link to="/About"><Button id='about'>About  </Button></Link></Menu.Item>
+                      <Menu.Item ><Link to="/"><Button id='out'>Logout</Button></Link></Menu.Item>
+                      <Menu.Menu  position='right'>
+                      <Dropdown id='menu' fluid item text='&#9776;'>
+                        <Dropdown.Menu>
+                        <Dropdown.Item><Link to="/Dashboard"><Button>Home</Button></Link></Dropdown.Item>
+                        <Dropdown.Item><Link to="/Request"><Button>History Request</Button></Link></Dropdown.Item>
+                        <Dropdown.Item><Link to="/About"><Button >About  </Button></Link></Dropdown.Item>
+                        <Dropdown.Item><Link to="/"><Button className = "logoutButton">Logout</Button></Link></Dropdown.Item>
+                      </Dropdown.Menu>
+                      </Dropdown>
+                      </Menu.Menu>
+                      </Menu>
                       </div>
-                  </div>
-                  <h3>You are...</h3>
+
+                  <h3 >You are...</h3>
                   <div className="select">
 
-                    <div className="column" id = "Driver">
-                      <Image src="https://i.imgur.com/n1EtVNB.png" fluid/>
+                    <div id = "Driver">
+                      <Image id="wheel" src="https://i.imgur.com/n1EtVNB.png" fluid/>
+
                           <div className = "content1">
 
-                              <Link to="/Driver"><Button>FOR DRIVERS</Button></Link>
+                              <Link to="/Driver"><Button size="tiny">DRIVERS</Button></Link>
                               <p>Post your upcoming rides,<br/>
                                   earn extra money<br/>and even make a friend along the way.</p>
                                 </div>
                             </div>
-                            <div className="column" id = "Passenger">
-                              <Image src="https://i.imgur.com/wUPTpzU.png" fluid/>
-                                <div className = "content">
-                                     <Link to="/Passenger"><Button>FOR PASSENGERS</Button></Link>
+                            <Divider id='divider' hidden />
+                            <div id = "Passenger">
+                              <Image id='happy' src="https://i.imgur.com/wUPTpzU.png" fluid/>
+                                <div className = "content2">
+                                     <Link to="/Passenger"><Button size="tiny">PASSENGERS</Button></Link>
                                      <p>Find your route,<br/>then sit back and relax:<br/> we'll take care of the rest!</p>
                                 </div>
                             </div>
-
                     </div>
                   </div>
 
+
             )
-        }else{
-          return(
-            <div>
-            <div id="navbar2">
-              <h1>Driver request</h1>
-              <div className='buttons'>
-                <Link to="/Dashboard"><Button>Home</Button></Link>
-                <Link to="/About"><Button >About  </Button></Link>
-                <Link to="/"><Button className = "logoutButton">Logout</Button></Link>
-              </div>
-            </div>
-            <br/><br/>
-            <div className="Trips">
-              {this.state.driverData.map((i,index)=>
-                <div key={index}>
-
-                    <Table singleLine>
-                      <Table.Header>
-                        <Table.Row>
-                        <Table.HeaderCell></Table.HeaderCell>
-                         <Table.HeaderCell>Passenger Email</Table.HeaderCell>
-                         <Table.HeaderCell>Passenger Gender</Table.HeaderCell>
-                         <Table.HeaderCell>Seats Asked</Table.HeaderCell>
-                         <Table.HeaderCell></Table.HeaderCell>
-                         <Table.HeaderCell></Table.HeaderCell>
-                        </Table.Row>
-                      </Table.Header>
-                      <Table.Body>
-                        {i.passengerEmail.map((j,index)=>
-                          <Table.Row key={index}>
-
-                            <Table.Cell><Icon name='users' /></Table.Cell>
-                            <Table.Cell>{j}@illinois.edu</Table.Cell>
-                            <Table.Cell>{i.passengerGender[index]}</Table.Cell>
-                            <Table.Cell>{i.passengerSeats[index]}</Table.Cell>
-
-                            <Table.Cell><form onClick={this.acceptChange}><Button value={i.passengerPhoneNumber[index]} disabled={this.state.accept||this.state.decline}>Accept</Button></form></Table.Cell>
-                            <Table.Cell><Button value={index} x={i} onClick={this.declineChange} disabled={this.state.accept||this.state.decline}>Decline</Button></Table.Cell>
-                          </Table.Row>
-                        )}
-                      </Table.Body>
-                    </Table>
-                </div>
-                )}
-            </div>
-          </div>
-          )
-        }
       }else {
             return(
                 <div className="Dashboard">

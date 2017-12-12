@@ -1,47 +1,50 @@
 .About {
   background-color: #e6faff;
-  .nav {
-    width:100%;
-      h1{
-        width:40%;
-        float:left;
-      }
       .buttons{
+        width:100%;
         padding-top:10px;
         padding-bottom:10px;
         float:right;
         display: flex;
         justify-content: flex-end;
+        background-color:#e6faff;
       }
-
-    }
     #intro{
         position:absolute;
-        top:50%;
+        top:42%;
         transform: translateY(-50%);
-        width:50%;
+        width:30%;
+        height:165px;
+        overflow:auto;
         padding-left:10px;
     }
 
 }
+@media only screen and (max-width: 768px) {
+  .buttons{
+    #home,#request,#about,#out{
+      display:none;
+    }
+    #menu{
+        display:inline;
+      }
+    }
+  }
+  @media (min-width: 769px) and (max-width: 1023px) {
+    #intro{
+      width:35%;
+      height:350px;
+    }
+  }
+  @media (min-width: 1024px){
+    #intro{
+      width:45%;
+      height:500px;
+    }
+  }
 
   // .Home{
   //   background-image: ");
   //   background-repeat:no-repeat;
   //   background-size: cover;
   // }
-  @media only screen and (max-width: 639px) {
-    body{
-      background-color: #e6faff;
-    }
-  }
-  @media (min-width: 640px) and (max-width: 1023px) {
-    body{
-      background-color:#e6faff;
-    }
-  }
-  @media (min-width: 1024px){
-    body{
-      background-color:#e6faff;
-    }
-  }
