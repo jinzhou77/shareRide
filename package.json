@@ -1,14 +1,14 @@
 {
-  "name": "passport_demo_2017",
+  "name": "longshareride app",
   "version": "1.0.0",
-  "description": "This basic implementation of adding Passport to an existing project was used as a demonstration for CS498 RK1. This code is provided as-is for learning purposes, and is NOT meant to be a 'starter code' for students' final projects. You are free to use it as such if you would like, but you are responsible for installing whatever packages you may want, making sure there are no bugs, and modifying the code as necessary to fit into your projects.",
+  "description": "the is an application for share ride.",
   "main": "index.js",
   "scripts": {
     "start": "nodemon --use_strict index.js",
     "dev": "webpack",
     "build": "react-scripts build"
   },
-  "author": "Simon Lu <shlu2@illinois.edu>",
+  "author": "jinyuan zhou",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.17.1",
