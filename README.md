@@ -1,8 +1,8 @@
 Course Project for CS498 rk
 
-team member
-  jinyuan zhou
-  mingkang yang
-  jiayi chen
-  kaile yang
+team member<br />
+  jinyuan zhou<br />
+  mingkang yang<br />
+  jiayi chen<br />
+  kaile yang<br />
   hao sun
